@@ -1,0 +1,3 @@
+tool: GCC
+fileName: RC24_R2_test_v1_eide.map
+elfName: RC24_R2_test_v1_eide.elf
