@@ -54,4 +54,5 @@ build/Debug/UC/_main_thread.o: UC/_main_thread.c \
  msg/r2_mavlinkmsg/./mavlink_msg_gyro.h \
  msg/r2_mavlinkmsg/./mavlink_msg_pose.h \
  msg/r2_mavlinkmsg/../mavlink_get_info.h \
- Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f427xx.h
+ Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f427xx.h \
+ UC/Event_Define.h

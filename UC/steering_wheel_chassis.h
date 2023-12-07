@@ -37,6 +37,12 @@ typedef enum{CHASSIS_CORRECTING,CHASSIS_AIMMING,CHASSIS_RUNNING,
     
     void swChassis_init(swChassis_t *this);
     void swChassis_startCorrect(swChassis_t *this);
+    HAL_StatusTypeDef swChassis_CheckCorrect(swChassis_t *this); 
+    HAL_StatusTypeDef swChassis_set_still(swChassis_t *this);
+    HAL_StatusTypeDef swChassis_check_velocity(swChassis_t *this);
+    void calculate_target_velocity(swChassis_t *this);
+    uint8_t swChassis_check_AimorRun(swChassis_t *this);
+    HAL_StatusTypeDef swChassis_set_Running(swChassis_t *this);
     void swChassis_set_targetVelocity(swChassis_t *this, const float vx, const float vy, const float vw);
     void swChassis_executor(swChassis_t *this);
     void swChassis_EXTI_Callback(swChassis_t *this, uint16_t GPIO_Pin);

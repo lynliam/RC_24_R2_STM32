@@ -40,4 +40,6 @@ build/Debug/UC/steering_wheel_chassis.o: UC/steering_wheel_chassis.c \
  Middlewares/Third_Party/FreeRTOS/Source/include/task.h \
  Middlewares/Third_Party/FreeRTOS/Source/include/list.h \
  Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h \
- Middlewares/ST/ARM/DSP/Inc/arm_math.h UC/DJI.h UC/wtr_can.h
+ Middlewares/ST/ARM/DSP/Inc/arm_math.h \
+ Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h UC/DJI.h \
+ UC/wtr_can.h

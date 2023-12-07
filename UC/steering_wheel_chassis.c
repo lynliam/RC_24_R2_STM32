@@ -6,6 +6,8 @@
 #include "main.h"
 #include "arm_math.h"
 #include "steering_wheel.h"
+#include "stm32f4xx_hal_def.h"
+#include <stdint.h>
 #ifdef USE_DEFAULT_MOTOR_PARAM
 #include "DJI.h"
 #include "wtr_can.h"
@@ -75,13 +77,29 @@ void swChassis_init(swChassis_t *this)
  */
 void swChassis_startCorrect(swChassis_t *this)
 {
-    this->state= CHASSIS_CORRECTING;
+    //this->state= CHASSIS_CORRECTING;
+
     #ifdef USE_DEFAULT_MOTOR_PARAM
     //测出M2006电机的静态摩擦力，设置前馈电流
     swChassis_rM_setFcurrent(this);
     #endif
     for (uint8_t i = 0; i <this->swheel_num ; i++)
         this->wheels[i].state=CORRECTING;
+}
+/**
+ * @brief 检查底盘是否校准完成
+ * 
+ * @param this 
+ * @return HAL_StatusTypeDef 
+ */
+HAL_StatusTypeDef swChassis_CheckCorrect(swChassis_t *this)
+{
+    for (uint8_t i = 0; i < this->swheel_num ; i++)
+    {
+        if(this->wheels[i].state!=STOP)
+            return HAL_BUSY;
+    }
+    return HAL_OK;
 }
 /**
  * @brief 设置底盘目标速度
@@ -95,6 +113,59 @@ void swChassis_set_targetVelocity(swChassis_t *this, const float vx, const float
     this->target_v.vy = vy;
     this->target_v.vw = vw;
 }
+
+/**
+ * @brief 保持底盘伺服静止
+ * 
+ * @param this 
+ * @return HAL_StatusTypeDef 
+ */
+HAL_StatusTypeDef swChassis_set_still(swChassis_t *this)
+{
+    for (uint8_t i = 0;i<this->swheel_num;i++)
+        this->wheels[i].state = STOP;
+    return HAL_OK;
+}
+
+/**
+ * @brief 检查底盘是否有速度指令
+ * 
+ * @param this 
+ * @return HAL_StatusTypeDef 
+ */
+HAL_StatusTypeDef swChassis_check_velocity(swChassis_t *this)
+{
+    if(this->target_v.vx==0&&this->target_v.vy==0&&this->target_v.vw==0)
+        return HAL_OK;
+    else
+        return HAL_BUSY;
+}
+
+/**
+ * @brief 检查底盘是否有转向指令，有则返回0，无则返回1
+ * 
+ * @param this 
+ * @return uint8_t 
+ */
+uint8_t swChassis_check_AimorRun(swChassis_t *this)
+{
+    for (uint8_t i = 0; i <this->swheel_num ; i++)
+        {
+            if(this->wheels[i].state==AIMMING)
+            {
+                return 0;
+            }
+        }
+    return 1;
+}
+
+HAL_StatusTypeDef swChassis_set_Running(swChassis_t *this)
+{
+    for (uint8_t i = 0; i <this->swheel_num ; i++)
+        this->wheels[i].state = RUNNING;
+    return HAL_OK;
+}
+
 /**
  * @brief 底盘状态机
  * @param this
@@ -167,7 +238,7 @@ void chassis_state_machine(swChassis_t *this)
  */
 void swChassis_executor(swChassis_t *this)
 {
-    chassis_state_machine(this);
+    //chassis_state_machine(this);
     
     float dji_output_withfc[4];
     for(int i=0;i<this->swheel_num;i++)
