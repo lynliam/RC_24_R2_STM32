@@ -167,13 +167,13 @@ HAL_StatusTypeDef swChassis_set_Running(swChassis_t *this)
 }
 
 /**
- * @brief 底盘状态机
+ * @brief 底盘状态机(2023/12/06弃用)
  * @param this
  * @description
  * 1.如果底盘处于校准状态，检查是否校准完成，如果完成则进入准备状态
  * 2.如果底盘处于非校准状态，检查是否有速度指令，如果无速度指令则进入停止状态
  * 3.如果有速度指令，则计算目标速度，如果目标速度方向与当前方向偏差太大，则进入转向状态，否则进入运行状态
- */
+ *
 void chassis_state_machine(swChassis_t *this)
 {
     if(this->state==CHASSIS_CORRECTING)
@@ -232,6 +232,9 @@ void chassis_state_machine(swChassis_t *this)
         // }
     }
 }
+*/
+
+
 /**
  * @brief 底盘执行器函数
  * @param this

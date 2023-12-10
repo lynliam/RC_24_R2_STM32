@@ -169,37 +169,9 @@ HSM_EVENT CHASSIS_ONReadyRunning_Handler(HSM *This, HSM_EVENT event, void *param
     }
     return event;
 }
-/*
-HSM_EVENT CHASSIS_ONReadyAimming_Handler(HSM *This, HSM_EVENT event, void *param)
-{
-    if(event == HSM_ENTRY)
-    {
-    }
-    else if(event == HSM_EXIT)
-    {
-    }
-    else if(event == HSM_CHASSIS_AMING)
-    {
-        calculate_target_velocity(&mychassis);
-        swChassis_executor(&mychassis);
-        if(swChassis_check_AimorRun(&mychassis) == 1)
-        {
-            Next_Event = HSM_CHASSIS_RUNNING;
-        }
-        return 0;
-    }
-    else if(event == HSM_CHASSIS_RUNNING)
-    {
-        calculate_target_velocity(&mychassis);
-        swChassis_executor(&mychassis);
-        HSM_Tran(This, &CHASSIS_ONReadyRunning, 0, NULL); 
-        Next_Event = HSM_CHASSIS_RUNNING;
-        return 0;
-    }
-    return event;   
-}
 
-*/
+
+
 void HSM_CHASSIS_Init(swChassis_t *This, char *name)
 {
     HSM_STATE_Create(&CHASSIS_ON, "CHASSIS_ON", CHASSIS_ON_Handler, NULL);

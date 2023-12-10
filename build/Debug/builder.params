@@ -7,7 +7,7 @@
     "buildMode": "fast|multhread",
     "showRepathOnLog": true,
     "threadNum": 8,
-    "rootDir": "/home/wtr2023/stm32_ws/temp/RC24_R2_v1_stm32_",
+    "rootDir": "/home/wtr2023/stm32_ws/RC24_R2_v1_stm32",
     "dumpPath": "build/Debug",
     "outDir": "build/Debug",
     "incDirs": [
@@ -136,20 +136,20 @@
             "LD_FLAGS": "",
             "LIB_FLAGS": "-lm",
             "link-scatter": [
-                "\"/home/wtr2023/stm32_ws/temp/RC24_R2_v1_stm32_/STM32F427IIHx_FLASH.ld\""
+                "\"/home/wtr2023/stm32_ws/RC24_R2_v1_stm32/STM32F427IIHx_FLASH.ld\""
             ]
         }
     },
     "env": {
-        "workspaceFolder": "/home/wtr2023/stm32_ws/temp/RC24_R2_v1_stm32_",
-        "workspaceFolderBasename": "RC24_R2_v1_stm32_",
-        "OutDir": "/home/wtr2023/stm32_ws/temp/RC24_R2_v1_stm32_/build/Debug",
+        "workspaceFolder": "/home/wtr2023/stm32_ws/RC24_R2_v1_stm32",
+        "workspaceFolderBasename": "RC24_R2_v1_stm32",
+        "OutDir": "/home/wtr2023/stm32_ws/RC24_R2_v1_stm32/build/Debug",
         "OutDirRoot": "build",
         "OutDirBase": "build/Debug",
         "ProjectName": "RC24_R2_test_v1_eide",
         "ConfigName": "Debug",
-        "ProjectRoot": "/home/wtr2023/stm32_ws/temp/RC24_R2_v1_stm32_",
-        "ExecutableName": "/home/wtr2023/stm32_ws/temp/RC24_R2_v1_stm32_/build/Debug/RC24_R2_test_v1_eide",
+        "ProjectRoot": "/home/wtr2023/stm32_ws/RC24_R2_v1_stm32",
+        "ExecutableName": "/home/wtr2023/stm32_ws/RC24_R2_v1_stm32/build/Debug/RC24_R2_test_v1_eide",
         "SYS_Platform": "linux",
         "SYS_DirSep": "/",
         "SYS_DirSeparator": "/",
@@ -165,6 +165,6 @@
         "global": "195cf06e5e5fdeaf185421dc9c5836b0",
         "c/cpp-compiler": "292b10e2fef533def4cb15297b4e0391",
         "asm-compiler": "dd2e48fddd09233278cb37447cf1e693",
-        "linker": "13ce6310aabaa0c3bf2597cb1a4523be"
+        "linker": "e98a18a3a25313243abe7f6cb338bd42"
     }
 }
