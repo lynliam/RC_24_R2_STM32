@@ -1,93 +1,14 @@
 >>> cc
 
-In file included from ./UC/steering_wheel.h:19,
-                 from ./UC/steering_wheel_chassis.h:11,
-                 from ./UC/_main_thread.c:65:
+In file included from ./UC/Event_Define.h:3,
+                 from ./UC/Event_Define.c:1:
 ./UC/HStateMachine.h:35:1: warning: useless storage class specifier in empty declaration
    35 | };
       | ^
-In file included from msg/r2_mavlinkmsg/r2_mavlinkmsg.h:49,
-                 from msg/r2_mavlinkmsg/mavlink.h:32,
-                 from ./UC/wtr_mavlink.h:105,
-                 from ./UC/_variables.h:15,
-                 from ./UC/_main_thread.c:68:
-msg/r2_mavlinkmsg/./mavlink_msg_speed.h: In function 'mavlink_msg_speed_send_buf':
-msg/r2_mavlinkmsg/./mavlink_msg_speed.h:201:5: warning: converting a packed 'mavlink_message_t' {aka 'struct __mavlink_message'} pointer (alignment 1) to a 'mavlink_speed_t' {aka 'struct __mavlink_speed_t'} pointer (alignment 8) may result in an unaligned pointer value [-Waddress-of-packed-member]
-  201 |     mavlink_speed_t *packet = (mavlink_speed_t *)msgbuf;
-      |     ^~~~~~~~~~~~~~~
-In file included from ./UC/wtr_mavlink.h:22,
-                 from ./UC/_variables.h:15,
-                 from ./UC/_main_thread.c:68:
-msg/mavlink_types.h:108:16: note: defined here
-  108 | typedef struct __mavlink_message {
-      |                ^~~~~~~~~~~~~~~~~
-msg/mavlink_types.h:17:40: note: in definition of macro 'MAVPACKED'
-   17 |   #define MAVPACKED( __Declaration__ ) __Declaration__ __attribute__((packed))
-      |                                        ^~~~~~~~~~~~~~~
-In file included from msg/r2_mavlinkmsg/r2_mavlinkmsg.h:49,
-                 from msg/r2_mavlinkmsg/mavlink.h:32,
-                 from ./UC/wtr_mavlink.h:105,
-                 from ./UC/_variables.h:15,
-                 from ./UC/_main_thread.c:68:
-msg/r2_mavlinkmsg/./mavlink_msg_speed.h:7:16: note: defined here
-    7 | typedef struct __mavlink_speed_t {
-      |                ^~~~~~~~~~~~~~~~~
-In file included from msg/r2_mavlinkmsg/r2_mavlinkmsg.h:50,
-                 from msg/r2_mavlinkmsg/mavlink.h:32,
-                 from ./UC/wtr_mavlink.h:105,
-                 from ./UC/_variables.h:15,
-                 from ./UC/_main_thread.c:68:
-msg/r2_mavlinkmsg/./mavlink_msg_gyro.h: In function 'mavlink_msg_gyro_send_buf':
-msg/r2_mavlinkmsg/./mavlink_msg_gyro.h:240:5: warning: converting a packed 'mavlink_message_t' {aka 'struct __mavlink_message'} pointer (alignment 1) to a 'mavlink_gyro_t' {aka 'struct __mavlink_gyro_t'} pointer (alignment 2) may result in an unaligned pointer value [-Waddress-of-packed-member]
-  240 |     mavlink_gyro_t *packet = (mavlink_gyro_t *)msgbuf;
-      |     ^~~~~~~~~~~~~~
-In file included from ./UC/wtr_mavlink.h:22,
-                 from ./UC/_variables.h:15,
-                 from ./UC/_main_thread.c:68:
-msg/mavlink_types.h:108:16: note: defined here
-  108 | typedef struct __mavlink_message {
-      |                ^~~~~~~~~~~~~~~~~
-msg/mavlink_types.h:17:40: note: in definition of macro 'MAVPACKED'
-   17 |   #define MAVPACKED( __Declaration__ ) __Declaration__ __attribute__((packed))
-      |                                        ^~~~~~~~~~~~~~~
-In file included from msg/r2_mavlinkmsg/r2_mavlinkmsg.h:50,
-                 from msg/r2_mavlinkmsg/mavlink.h:32,
-                 from ./UC/wtr_mavlink.h:105,
-                 from ./UC/_variables.h:15,
-                 from ./UC/_main_thread.c:68:
-msg/r2_mavlinkmsg/./mavlink_msg_gyro.h:7:16: note: defined here
-    7 | typedef struct __mavlink_gyro_t {
-      |                ^~~~~~~~~~~~~~~~
-In file included from msg/r2_mavlinkmsg/r2_mavlinkmsg.h:51,
-                 from msg/r2_mavlinkmsg/mavlink.h:32,
-                 from ./UC/wtr_mavlink.h:105,
-                 from ./UC/_variables.h:15,
-                 from ./UC/_main_thread.c:68:
-msg/r2_mavlinkmsg/./mavlink_msg_pose.h: In function 'mavlink_msg_pose_send_buf':
-msg/r2_mavlinkmsg/./mavlink_msg_pose.h:201:5: warning: converting a packed 'mavlink_message_t' {aka 'struct __mavlink_message'} pointer (alignment 1) to a 'mavlink_pose_t' {aka 'struct __mavlink_pose_t'} pointer (alignment 8) may result in an unaligned pointer value [-Waddress-of-packed-member]
-  201 |     mavlink_pose_t *packet = (mavlink_pose_t *)msgbuf;
-      |     ^~~~~~~~~~~~~~
-In file included from ./UC/wtr_mavlink.h:22,
-                 from ./UC/_variables.h:15,
-                 from ./UC/_main_thread.c:68:
-msg/mavlink_types.h:108:16: note: defined here
-  108 | typedef struct __mavlink_message {
-      |                ^~~~~~~~~~~~~~~~~
-msg/mavlink_types.h:17:40: note: in definition of macro 'MAVPACKED'
-   17 |   #define MAVPACKED( __Declaration__ ) __Declaration__ __attribute__((packed))
-      |                                        ^~~~~~~~~~~~~~~
-In file included from msg/r2_mavlinkmsg/r2_mavlinkmsg.h:51,
-                 from msg/r2_mavlinkmsg/mavlink.h:32,
-                 from ./UC/wtr_mavlink.h:105,
-                 from ./UC/_variables.h:15,
-                 from ./UC/_main_thread.c:68:
-msg/r2_mavlinkmsg/./mavlink_msg_pose.h:7:16: note: defined here
-    7 | typedef struct __mavlink_pose_t {
-      |                ^~~~~~~~~~~~~~~~
 
 >>> ld
 
 Memory region         Used Size  Region Size  %age Used
              RAM:       24240 B       192 KB     12.33%
           CCMRAM:          0 GB        64 KB      0.00%
-           FLASH:       47452 B         2 MB      2.26%
+           FLASH:       47732 B         2 MB      2.28%

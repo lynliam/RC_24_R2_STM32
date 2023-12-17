@@ -11,7 +11,7 @@
 #ifdef USE_DEFAULT_MOTOR_PARAM
 #include "DJI.h"
 #include "wtr_can.h"
-void swChassis_rM_setFcurrent(swChassis_t *this);
+HAL_StatusTypeDef swChassis_rM_setFcurrent(swChassis_t *this);
 #endif
 #define norm(a,b) sqrt((a)*(a)+(b)*(b)) //计算模长
 #ifdef FOUR_WHEELS_CHASSIS
@@ -75,16 +75,19 @@ void swChassis_init(swChassis_t *this)
 /**
  * @brief 底盘开始校正
  */
-void swChassis_startCorrect(swChassis_t *this)
+HAL_StatusTypeDef swChassis_startCorrect(swChassis_t *this)
 {
     //this->state= CHASSIS_CORRECTING;
-
     #ifdef USE_DEFAULT_MOTOR_PARAM
+    HAL_StatusTypeDef correct_state;
     //测出M2006电机的静态摩擦力，设置前馈电流
-    swChassis_rM_setFcurrent(this);
+    correct_state = swChassis_rM_setFcurrent(this);
+    if(correct_state!=HAL_OK)
+        return HAL_ERROR;
     #endif
     for (uint8_t i = 0; i <this->swheel_num ; i++)
         this->wheels[i].state=CORRECTING;
+    return HAL_OK;
 }
 /**
  * @brief 检查底盘是否校准完成
@@ -322,14 +325,18 @@ void swChassis_EXTI_Callback(swChassis_t *this, uint16_t GPIO_Pin)
         steeringWheel_EXTI_Callback(&this->wheels[i], GPIO_Pin);
     }
 }
+
+
+#ifdef USE_DEFAULT_MOTOR_PARAM
 /**
  * @brief 测出M2006电机的静态摩擦力，设置前馈电流
  * @param this
  */
-#ifdef USE_DEFAULT_MOTOR_PARAM
-void swChassis_rM_setFcurrent(swChassis_t *this)
+HAL_StatusTypeDef swChassis_rM_setFcurrent(swChassis_t *this)
 {
     uint8_t flag=0x00;
+    uint16_t time_count[4] = {0};     //记录电流如果为零的次数过多，则认为电机故障
+
     while (flag!=0x0f)
     {
         for (uint8_t i = 0; i < this->swheel_num ; i++)
@@ -339,11 +346,19 @@ void swChassis_rM_setFcurrent(swChassis_t *this)
                 flag = flag|0x01<<i;
                 continue;
             }
+            else if (hDJI[i].FdbData.rpm == 0.0 && !(flag&(0x01<<i))) {
+                time_count[i] ++;
+            }
             hDJI[i].f_current++;
+        }
+        if (time_count[0] > 300 || time_count[1] > 300 || time_count[2] > 300 || time_count[3] > 300) {
+            return HAL_ERROR;
         }
         CanTransmit_DJI_1234(&hcan1,hDJI[0].f_current,hDJI[1].f_current,hDJI[2].f_current,hDJI[3].f_current);
         Delay_ms(2);
     }
     CanTransmit_DJI_1234(&hcan1,0,0,0,0);
+    return HAL_OK;
 }
-#endif
+
+#endif //USE_DEFAULT_MOTOR_PARAM

@@ -2,6 +2,7 @@
 #include "HStateMachine.h"
 #include "steering_wheel_chassis.h"
 #include "stm32f427xx.h"
+#include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_def.h"
 #include "stm32f4xx_hal_gpio.h"
 
@@ -48,6 +49,11 @@ HSM_EVENT CHASSIS_ON_Handler(HSM *This, HSM_EVENT event, void *param)
         HSM_Tran(This, &CHASSIS_ONCorrecting, 0, NULL); 
         return 0;
     }
+    else if(event == HSM_CHASSIS_ERROR)
+    {
+        HSM_Tran(This, &CHASSIS_ONError, 0, NULL); 
+        return 0;
+    }
     return event;
 }
 
@@ -55,13 +61,26 @@ HSM_EVENT CHASSIS_ONError_Handler(HSM *This, HSM_EVENT event, void *param)
 {
     if(event == HSM_ENTRY)
     {
+        HAL_GPIO_WritePin(GPIOG, GPIO_PIN_1, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(GPIOG, GPIO_PIN_2, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(GPIOG, GPIO_PIN_3, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(GPIOG, GPIO_PIN_4, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(GPIOG, GPIO_PIN_5, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(GPIOG, GPIO_PIN_6, GPIO_PIN_RESET);
     }
     else if(event == HSM_EXIT)
     {
     }
     else if(event == HSM_CHASSIS_ERROR)
     {
-        HSM_Tran(This, &CHASSIS_OFF, 0, NULL);
+        //HSM_Tran(This, &CHASSIS_OFF, 0, NULL);
+        HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_1);
+        HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_2);
+        HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_3);
+        HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_4);
+        HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_5);
+        HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_6);
+        vTaskDelay(500/portTICK_RATE_MS);
         return 0;
     }
     return event;
@@ -73,8 +92,12 @@ HSM_EVENT CHASSIS_ONCorrecting_Handler(HSM *This, HSM_EVENT event, void *param)
     if(event == HSM_ENTRY)
     {
         HAL_GPIO_WritePin(GPIOG, GPIO_PIN_2, GPIO_PIN_RESET);
-        swChassis_startCorrect(&mychassis);
         Next_Event = HSM_CHASSIS_CORRECTING;
+        if(swChassis_startCorrect(&mychassis) != HAL_OK)
+        {
+            HSM_Tran(This, &CHASSIS_ONError, 0, NULL); 
+            Next_Event = HSM_CHASSIS_ERROR;
+        }
     }
     else if(event == HSM_EXIT)
     {
