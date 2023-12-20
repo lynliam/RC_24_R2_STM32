@@ -64,9 +64,9 @@
 // 底盘控制线程
 #include "steering_wheel_chassis.h"
 #include "cmsis_os.h"
-#include "ops.h"
+//#include "ops.h"
 #include "_variables.h"
-#include "stm32f427xx.h"
+//#include "stm32f427xx.h"
 #include "stm32f4xx_hal_gpio.h"
 #include "Event_Define.h"
 
