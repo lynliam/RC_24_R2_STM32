@@ -1,23 +1,59 @@
-#include "main.h"
-#include "cmsis_os.h"
-#include "_chassis_thread.h"
 
-#include "_variables.h"
-#include "usart.h"
-#include "tim.h"
-#include "FeeTech.hpp"
-#include "mapping.hpp"
-#include "Unitree_user.h"
-#include<math.h>
-#include "ops.h"
-#include "steering_wheel_chassis.h"
+// #include "cmsis_os.h"
+// #include "_chassis_thread.h"
+#include "FreeRTOS.h"
+#include "task.h"
+
+// #include "_variables.h"
+// #include "usart.h"
+ #include "tim.h"
+// #include "FeeTech.hpp"
+ #include "mapping.h"
+// #include "Unitree_user.h"
+// #include<math.h>
+// #include "ops.h"
+// #include "steering_wheel_chassis.h"
 // const float unitree_offset =0.3;
 // Mapping feetMap;
 // int p;
+int l0,r0;
+mapping_param_t map_chan3;
+mapping_param_t map_chan4;
 
+void jaw_close()
+{
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 105);
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, 65);
+}
+void jaw_open_b()
+{
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 55);
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, 115);
+}
+void jaw_open_s()
+{
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 75);
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, 95);
+}
 //上层控制线程
 void StartUpControlTask(void *argument) {
-
+    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
+    jaw_close();
+    // mapping_param_init(&map_chan3, 0, 180, 0, 125, 25, 125);
+    // mapping_limit_o(&map_chan3, 55, 105);    
+    // mapping_param_init(&map_chan4, 0, 180, -35, 25, 125, 25);
+    // mapping_limit_o(&map_chan4, 65, 115);
+    // l0 = (int)mapping_i2o(&map_chan3, 90);
+    // r0 = (int)mapping_i2o(&map_chan4, 90);
+    // __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, (int)mapping_i2o(&map_chan3, 90));
+    // __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, (int)mapping_i2o(&map_chan4, 90));
+    for(;;)
+    {
+        vTaskDelay(1000);
+    }
     // Mapping servo1Map = Mapping(75, 115);
     // Mapping servo2Map = Mapping(40, 75);
     // //Genetic_Servo genetic_feet = Genetic_Servo(1700, 4000);

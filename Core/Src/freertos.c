@@ -108,13 +108,13 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* creation of MavlinkTask */
-  MavlinkTaskHandle = osThreadNew(StartMavlinkTask, NULL, &MavlinkTask_attributes);
+  //MavlinkTaskHandle = osThreadNew(StartMavlinkTask, NULL, &MavlinkTask_attributes);
 
   /* creation of upControlTask */
   upControlTaskHandle = osThreadNew(StartUpControlTask, NULL, &upControlTask_attributes);
 
   /* creation of chassisTask */
-  chassisTaskHandle = osThreadNew(StartChassisTask, NULL, &chassisTask_attributes);
+  //chassisTaskHandle = osThreadNew(StartChassisTask, NULL, &chassisTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
