@@ -11,7 +11,7 @@
 //#include "stm32f427xx.h"
 #include "stm32f4xx_hal_gpio.h"
 #include "Event_Define.h"
-
+swChassis_t mychassis;
 
 void StartChassisTask(void *argument)
 {
@@ -21,9 +21,8 @@ void StartChassisTask(void *argument)
     HSM_CHASSIS_Run(&mychassis, HSM_CHASSIS_START, NULL);
     // CANFilterInit(&hcan1);
     // xSemaphoreTake(sync_mutex, 1000/portTICK_RATE_MS);
-    // vTaskDelay(100 / portTICK_RATE_MS);
-    // xSemaphoreGive(sync_mutex);
-    // swChassis_set_targetVelocity(&mychassis,8,-0.7,-1.4);
+
+    // swChassis_set_targetVelocity(&mychassis,8,-0.7,-1.4);swChassis_set_targetVelocity(&mychassis,8,-0.7,-1.4);
     // vTaskDelay(5000 / portTICK_RATE_MS);
     //    hDJI[0].motorType=M3508;
     //    DJI_Init();

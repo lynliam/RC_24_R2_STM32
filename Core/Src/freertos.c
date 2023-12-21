@@ -19,6 +19,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
+#include "_variables.h"
 #include "task.h"
 #include "main.h"
 #include "cmsis_os.h"
@@ -45,7 +46,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-
+SemaphoreHandle_t sync_mutex;
 /* USER CODE END Variables */
 /* Definitions for MavlinkTask */
 osThreadId_t MavlinkTaskHandle;
@@ -96,6 +97,9 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
+  
+  sync_mutex = xSemaphoreCreateBinary();
+
   /* USER CODE END RTOS_SEMAPHORES */
 
   /* USER CODE BEGIN RTOS_TIMERS */
@@ -114,7 +118,7 @@ void MX_FREERTOS_Init(void) {
   upControlTaskHandle = osThreadNew(StartUpControlTask, NULL, &upControlTask_attributes);
 
   /* creation of chassisTask */
-  //chassisTaskHandle = osThreadNew(StartChassisTask, NULL, &chassisTask_attributes);
+  chassisTaskHandle = osThreadNew(StartChassisTask, NULL, &chassisTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

@@ -3,12 +3,13 @@
 // #include "_chassis_thread.h"
 #include "FreeRTOS.h"
 #include "task.h"
-
+#include "_variables.h"
 // #include "_variables.h"
 // #include "usart.h"
- #include "tim.h"
+#include "tim.h"
+#include <stdint.h>
 // #include "FeeTech.hpp"
- #include "mapping.h"
+//#include "mapping.h"
 // #include "Unitree_user.h"
 // #include<math.h>
 // #include "ops.h"
@@ -16,9 +17,7 @@
 // const float unitree_offset =0.3;
 // Mapping feetMap;
 // int p;
-int l0,r0;
-mapping_param_t map_chan3;
-mapping_param_t map_chan4;
+
 
 void jaw_close()
 {
@@ -42,6 +41,11 @@ void StartUpControlTask(void *argument) {
     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
     jaw_close();
+    vTaskDelay(6000/portTICK_RATE_MS);
+    
+    // int l0,r0;
+    // mapping_param_t map_chan3;
+    // mapping_param_t map_chan4;
     // mapping_param_init(&map_chan3, 0, 180, 0, 125, 25, 125);
     // mapping_limit_o(&map_chan3, 55, 105);    
     // mapping_param_init(&map_chan4, 0, 180, -35, 25, 125, 25);
@@ -54,6 +58,7 @@ void StartUpControlTask(void *argument) {
     {
         vTaskDelay(1000);
     }
+    //夹爪功能被注释，勿动
     // Mapping servo1Map = Mapping(75, 115);
     // Mapping servo2Map = Mapping(40, 75);
     // //Genetic_Servo genetic_feet = Genetic_Servo(1700, 4000);
@@ -93,3 +98,25 @@ void StartUpControlTask(void *argument) {
     //     vTaskDelayUntil(&xLastWakeTime, 100 / portTICK_RATE_MS);
     // }
 }
+
+//抓球测试
+// void get_ball_test()
+// {
+//     uint8_t stage = 0;
+//     for(;;)
+//     {
+//         if(stage<5)
+//         {
+//             jaw_open_b();
+//             swChassis_set_targetVelocity(&mychassis,-6,0,0);
+//             stage++;
+//         }
+//         else {
+//             swChassis_set_targetVelocity(&mychassis,0,0,0);
+//             vTaskDelay(200/portTICK_RATE_MS);
+//             jaw_close();
+            
+//         }
+//         vTaskDelay(200/portTICK_RATE_MS);
+//     }
+// }

@@ -2,6 +2,7 @@
 #include "HStateMachine.h"
 #include "steering_wheel_chassis.h"
 #include "stm32f427xx.h"
+#include "_variables.h"
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_def.h"
 #include "stm32f4xx_hal_gpio.h"
@@ -13,7 +14,7 @@ HSM_STATE CHASSIS_ONError;
 HSM_STATE CHASSIS_ONCorrecting;
 HSM_STATE CHASSIS_ONReadyRunning;
 
-swChassis_t mychassis;
+//swChassis_t mychassis;
 VESC_t hVESC[4];
 HSM_EVENT Next_Event;
 
