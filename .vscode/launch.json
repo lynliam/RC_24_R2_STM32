@@ -7,7 +7,7 @@
             "request": "launch",
             "name": "openocd",
             "servertype": "openocd",
-            "executable": "build/Debug/RC24_R2_test_v1_eide.elf",
+            "executable": "build\\Debug\\RC24_R2_test_v1_eide.elf",
             "runToEntryPoint": "main",
             "configFiles": [
                 "interface/stlink.cfg",

@@ -86,7 +86,11 @@
           "Middlewares/Third_Party/FreeRTOS/Source/include",
           "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F",
           "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2",
-          "Middlewares/ST/ARM/DSP/Inc"
+          "Middlewares/ST/ARM/DSP/Inc",
+          "msg",
+          "Unitree_SDK",
+          "msg/r2_mavlinkmsg",
+          "UC"
         ],
         "libList": [],
         "sourceDirList": [],
