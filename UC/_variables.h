@@ -13,6 +13,9 @@ extern "C" {
 #include "semphr.h"
 #include "steering_wheel_chassis.h"
 #include "wtr_mavlink.h"
+extern xTaskHandle upControlTaskHandle;
+extern xTaskHandle mavlinkTaskHandle;
+extern xTaskHandle chassisTaskHandle;
 extern swChassis_t mychassis;
 extern mavlink_pose_t  actual_pose;
 extern mavlink_speed_t mv_cmd;

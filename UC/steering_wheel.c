@@ -66,7 +66,7 @@ void steeringWheel_rMotor_reset(steering_wheel_t *this)
 }
 void _Swheel_mMotor_speedServo(steering_wheel_t *this, const float speed)
 {
-    float erpm = speed*14*2/STEERING_WHEEL_DIAMETER;//*k
+    float erpm = 840*speed/STEERING_WHEEL_DIAMETER/PI;//n(rpm)=60f=60v/(pi*D) 840=14*60
     VESC_CAN_SET_ERPM(&hVESC[this->id],erpm);
 }
 #endif
@@ -206,7 +206,7 @@ void steeringWheel_executor(steering_wheel_t *this)
             this->state=AIMMING;
             return;
         }
-         _Swheel_mMotor_speedServo(this, this->target_main_speed);
+        _Swheel_mMotor_speedServo(this, this->target_main_speed);
         return;
     }
     if(this->state==AIMMING) 

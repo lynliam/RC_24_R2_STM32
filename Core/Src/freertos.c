@@ -26,6 +26,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "semphr.h"
+#include "_up_control_thread.h"
+#include "_chassis_thread.h"
+#include "_mavlink_thread.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,28 +48,18 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
+
+xTaskHandle upControlTaskHandle;
+xTaskHandle mavlinkTaskHandle;
+xTaskHandle chassisTaskHandle;
 SemaphoreHandle_t sync_mutex;
 /* USER CODE END Variables */
-/* Definitions for MavlinkTask */
-osThreadId_t MavlinkTaskHandle;
-const osThreadAttr_t MavlinkTask_attributes = {
-  .name = "MavlinkTask",
-  .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
-};
-/* Definitions for upControlTask */
-osThreadId_t upControlTaskHandle;
-const osThreadAttr_t upControlTask_attributes = {
-  .name = "upControlTask",
-  .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
-};
-/* Definitions for chassisTask */
-osThreadId_t chassisTaskHandle;
-const osThreadAttr_t chassisTask_attributes = {
-  .name = "chassisTask",
-  .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+/* Definitions for nullTask */
+osThreadId_t nullTaskHandle;
+const osThreadAttr_t nullTask_attributes = {
+  .name = "nullTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -74,9 +67,7 @@ const osThreadAttr_t chassisTask_attributes = {
 
 /* USER CODE END FunctionPrototypes */
 
-void StartMavlinkTask(void *argument);
-void StartUpControlTask(void *argument);
-void StartChassisTask(void *argument);
+void StartNullTask(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -110,17 +101,15 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of MavlinkTask */
-  //MavlinkTaskHandle = osThreadNew(StartMavlinkTask, NULL, &MavlinkTask_attributes);
-
-  /* creation of upControlTask */
-  upControlTaskHandle = osThreadNew(StartUpControlTask, NULL, &upControlTask_attributes);
-
-  /* creation of chassisTask */
-  //chassisTaskHandle = osThreadNew(StartChassisTask, NULL, &chassisTask_attributes);
+  /* creation of nullTask */
+  nullTaskHandle = osThreadNew(StartNullTask, NULL, &nullTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+  xTaskCreate(StartUpControlTask,"up control task",512,NULL,0,&upControlTaskHandle);
+  //xTaskCreate(StartMavlinkTask,"mavlink task",512,NULL,0,&mavlinkTaskHandle);
+  //xTaskCreate(StartChassisTask,"chassis task",512,NULL,1,&chassisTaskHandle);
+
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
@@ -129,58 +118,19 @@ void MX_FREERTOS_Init(void) {
 
 }
 
-/* USER CODE BEGIN Header_StartMavlinkTask */
+/* USER CODE BEGIN Header_StartNullTask */
 /**
-  * @brief  Function implementing the MavlinkTask thread.
+  * @brief  Function implementing the nullTask thread.
   * @param  argument: Not used
   * @retval None
   */
-/* USER CODE END Header_StartMavlinkTask */
-__weak void StartMavlinkTask(void *argument)
+/* USER CODE END Header_StartNullTask */
+void StartNullTask(void *argument)
 {
-  /* USER CODE BEGIN StartMavlinkTask */
+  /* USER CODE BEGIN StartNullTask */
   /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END StartMavlinkTask */
-}
-
-/* USER CODE BEGIN Header_StartUpControlTask */
-/**
-* @brief Function implementing the upControlTask thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartUpControlTask */
-__weak void StartUpControlTask(void *argument)
-{
-  /* USER CODE BEGIN StartUpControlTask */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END StartUpControlTask */
-}
-
-/* USER CODE BEGIN Header_StartChassisTask */
-/**
-* @brief Function implementing the chassisTask thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartChassisTask */
-__weak void StartChassisTask(void *argument)
-{
-  /* USER CODE BEGIN StartChassisTask */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END StartChassisTask */
+  vTaskDelete(NULL);
+  /* USER CODE END StartNullTask */
 }
 
 /* Private application code --------------------------------------------------*/

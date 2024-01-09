@@ -19,17 +19,10 @@ void StartChassisTask(void *argument)
     // swChassis_startCorrect(&mychassis);
     HSM_CHASSIS_Init(&mychassis, "chassis");
     HSM_CHASSIS_Run(&mychassis, HSM_CHASSIS_START, NULL);
-    // CANFilterInit(&hcan1);
-    // xSemaphoreTake(sync_mutex, 1000/portTICK_RATE_MS);
 
-    // swChassis_set_targetVelocity(&mychassis,8,-0.7,-1.4);swChassis_set_targetVelocity(&mychassis,8,-0.7,-1.4);
-    // vTaskDelay(5000 / portTICK_RATE_MS);
-    //    hDJI[0].motorType=M3508;
-    //    DJI_Init();
+    swChassis_set_targetVelocity(&mychassis,0.5,0,0);
     for (;;) {
-        // xSemaphoreTake(data_mutex,0);
-        swChassis_set_targetVelocity(&mychassis, mv_cmd.vx, mv_cmd.vy, mv_cmd.vw);
-        // xSemaphoreGive(data_mutex);
+        //swChassis_set_targetVelocity(&mychassis, mv_cmd.vx, mv_cmd.vy, mv_cmd.vw);
         HSM_CHASSIS_Run(&mychassis, Next_Event, NULL);
         //        for (int i=1;i<5;i++)
         //        {

@@ -8,6 +8,7 @@ void StartUpControlTask(void *argument);
 
 #ifdef __cplusplus
 }
+#include "Servo_uart.hpp"
 
 #endif
 #endif //
