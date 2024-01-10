@@ -20,9 +20,8 @@ void StartChassisTask(void *argument)
     HSM_CHASSIS_Init(&mychassis, "chassis");
     HSM_CHASSIS_Run(&mychassis, HSM_CHASSIS_START, NULL);
 
-    swChassis_set_targetVelocity(&mychassis,0.5,0,0);
     for (;;) {
-        //swChassis_set_targetVelocity(&mychassis, mv_cmd.vx, mv_cmd.vy, mv_cmd.vw);
+        swChassis_set_targetVelocity(&mychassis, mv_cmd.vx, mv_cmd.vy, mv_cmd.vw);
         HSM_CHASSIS_Run(&mychassis, Next_Event, NULL);
         //        for (int i=1;i<5;i++)
         //        {
