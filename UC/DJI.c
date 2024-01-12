@@ -1,4 +1,5 @@
 #include "DJI.h"
+#include <stdint.h>
 
 #define LAST 0
 #define NOW 1
@@ -47,6 +48,7 @@ void DJI_Init()
  */
 void CanTransmit_DJI_1234(CAN_HandleTypeDef *hcanx, int16_t cm1_iq, int16_t cm2_iq, int16_t cm3_iq, int16_t cm4_iq)
 {
+	static uint16_t count;
 	CAN_TxHeaderTypeDef TxMessage;
 
 	TxMessage.DLC = 0x08;
@@ -64,7 +66,8 @@ void CanTransmit_DJI_1234(CAN_HandleTypeDef *hcanx, int16_t cm1_iq, int16_t cm2_
 	TxData[6] = (uint8_t)(cm4_iq >> 8);
 	TxData[7] = (uint8_t)cm4_iq;
 	while (HAL_CAN_GetTxMailboxesFreeLevel(hcanx) == 0) // 等待邮箱空闲
-		;
+	{
+	}
 	if (HAL_CAN_AddTxMessage(hcanx, &TxMessage, TxData, &TxMailbox) != HAL_OK)
 	{
 		Error_Handler(); // 如果CAN信息发送失败则进入死循环

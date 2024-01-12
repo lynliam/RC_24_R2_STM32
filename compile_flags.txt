@@ -1,5 +1,5 @@
 -I
-Core/Inc 
+Core/Inc
 -I
 Drivers/STM32F4xx_HAL_Driver/Inc 
 -I

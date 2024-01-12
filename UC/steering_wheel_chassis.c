@@ -257,7 +257,7 @@ void swChassis_executor(swChassis_t *this)
         else
             dji_output_withfc[i]=hDJI[i].speedPID.output;
     }
-    CanTransmit_DJI_1234(&hcan1,dji_output_withfc[0],dji_output_withfc[1],dji_output_withfc[2],dji_output_withfc[3]);
+    //CanTransmit_DJI_1234(&hcan1,dji_output_withfc[0],dji_output_withfc[1],dji_output_withfc[2],dji_output_withfc[3]);
     //CanTransmit_DJI_1234(&hcan1,dji_output_withfc[0],0,0,0);
 
 }

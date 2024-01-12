@@ -16,6 +16,7 @@ extern "C" {
 #define HSM_CHASSIS_AMING        (HSM_START+5)
 #define HSM_CHASSIS_RUNNING      (HSM_START+6)
 #define HSM_CHASSIS_ERROR        (HSM_START+7)
+#define HSM_CHASSIS_POWEROFF     (HSM_START+8)
 
 HSM_EVENT CHASSIS_ON_Handler(HSM *This, HSM_EVENT event, void *param);
 HSM_EVENT CHASSIS_OFF_Handler(HSM *This, HSM_EVENT event, void *param);

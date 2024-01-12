@@ -1,10 +1,10 @@
 /** @file
- *    @brief MAVLink comm protocol testsuite generated from r2_mavlinkmsg.xml
+ *    @brief MAVLink comm protocol testsuite generated from r2_mavlinkmsg_.xml
  *    @see https://mavlink.io/en/
  */
 #pragma once
-#ifndef R2_MAVLINKMSG_TESTSUITE_H
-#define R2_MAVLINKMSG_TESTSUITE_H
+#ifndef R2_MAVLINKMSG__TESTSUITE_H
+#define R2_MAVLINKMSG__TESTSUITE_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -13,12 +13,12 @@ extern "C" {
 #ifndef MAVLINK_TEST_ALL
 #define MAVLINK_TEST_ALL
 
-static void mavlink_test_r2_mavlinkmsg(uint8_t, uint8_t, mavlink_message_t *last_msg);
+static void mavlink_test_r2_mavlinkmsg_(uint8_t, uint8_t, mavlink_message_t *last_msg);
 
 static void mavlink_test_all(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
 {
 
-    mavlink_test_r2_mavlinkmsg(system_id, component_id, last_msg);
+    mavlink_test_r2_mavlinkmsg_(system_id, component_id, last_msg);
 }
 #endif
 
@@ -211,7 +211,7 @@ static void mavlink_test_pose(uint8_t system_id, uint8_t component_id, mavlink_m
 #endif
 }
 
-static void mavlink_test_r2_mavlinkmsg(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
+static void mavlink_test_r2_mavlinkmsg_(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
 {
     mavlink_test_speed(system_id, component_id, last_msg);
     mavlink_test_gyro(system_id, component_id, last_msg);
@@ -221,4 +221,4 @@ static void mavlink_test_r2_mavlinkmsg(uint8_t system_id, uint8_t component_id, 
 #ifdef __cplusplus
 }
 #endif // __cplusplus
-#endif // R2_MAVLINKMSG_TESTSUITE_H
+#endif // R2_MAVLINKMSG__TESTSUITE_H

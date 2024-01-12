@@ -5,7 +5,7 @@
 #include "_up_control_thread.h"
 #include "tim.h"
 #include <stdint.h>
-#include "FeeTech.h"
+#include "feetech.h"
 #include "mapping.h"
 #include "Unitree_user.h"
 

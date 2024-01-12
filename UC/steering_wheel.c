@@ -199,8 +199,6 @@ void steeringWheel_executor(steering_wheel_t *this)
     }
     if(this->state==RUNNING)
     {
-       //_Swheel_rMotor_posServo(this, this->target_direction +
-        //                                2 * M_PI * (int) ((this->rotation_pos - this->direction_offset) / (2 * M_PI)));
         if(Swheel_aim(this))
         {
             this->state=AIMMING;
@@ -216,7 +214,6 @@ void steeringWheel_executor(steering_wheel_t *this)
             this->state=STOP;
             return;
         }
-        //_Swheel_rMotor_posServo(this, this->target_direction +2 * M_PI *(int) ((this->rotation_pos - this->direction_offset)/ (2 * M_PI)));
         return;
     }
 

@@ -1,16 +1,16 @@
 /** @file
- *  @brief MAVLink comm protocol generated from r2_mavlinkmsg.xml
+ *  @brief MAVLink comm protocol generated from r2_mavlinkmsg_.xml
  *  @see http://mavlink.org
  */
 #pragma once
-#ifndef MAVLINK_R2_MAVLINKMSG_H
-#define MAVLINK_R2_MAVLINKMSG_H
+#ifndef MAVLINK_R2_MAVLINKMSG__H
+#define MAVLINK_R2_MAVLINKMSG__H
 
 #ifndef MAVLINK_H
-    #error Wrong include order: MAVLINK_R2_MAVLINKMSG.H MUST NOT BE DIRECTLY USED. Include mavlink.h from the same directory instead or set ALL AND EVERY defines from MAVLINK.H manually accordingly, including the #define MAVLINK_H call.
+    #error Wrong include order: MAVLINK_R2_MAVLINKMSG_.H MUST NOT BE DIRECTLY USED. Include mavlink.h from the same directory instead or set ALL AND EVERY defines from MAVLINK.H manually accordingly, including the #define MAVLINK_H call.
 #endif
 
-#define MAVLINK_R2_MAVLINKMSG_XML_HASH 7571609883822650427
+#define MAVLINK_R2_MAVLINKMSG__XML_HASH -3388473571168506211
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,11 +28,23 @@ extern "C" {
 
 #include "../protocol.h"
 
-#define MAVLINK_ENABLED_R2_MAVLINKMSG
+#define MAVLINK_ENABLED_R2_MAVLINKMSG_
 
 // ENUM DEFINITIONS
 
 
+/** @brief 上层机构控制命令 */
+#ifndef HAVE_ENUM_UP_CONTROL_CMD
+#define HAVE_ENUM_UP_CONTROL_CMD
+typedef enum UP_CONTROL_CMD
+{
+   RESET=0, /* 无命令状态 复位 | */
+   CHASE_BALL=1, /* 找球 | */
+   CATCH_BALL=2, /* 抓球 | */
+   PUT_BALL=3, /* 放球 | */
+   UP_CONTROL_CMD_ENUM_END=4, /*  | */
+} UP_CONTROL_CMD;
+#endif
 
 // MAVLINK VERSION
 
@@ -54,7 +66,7 @@ extern "C" {
 
 
 
-#if MAVLINK_R2_MAVLINKMSG_XML_HASH == MAVLINK_PRIMARY_XML_HASH
+#if MAVLINK_R2_MAVLINKMSG__XML_HASH == MAVLINK_PRIMARY_XML_HASH
 # define MAVLINK_MESSAGE_INFO {MAVLINK_MESSAGE_INFO_SPEED, MAVLINK_MESSAGE_INFO_GYRO, MAVLINK_MESSAGE_INFO_POSE}
 # define MAVLINK_MESSAGE_NAMES {{ "GYRO", 2 }, { "POSE", 3 }, { "SPEED", 1 }}
 # if MAVLINK_COMMAND_24BIT
@@ -65,4 +77,4 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif // __cplusplus
-#endif // MAVLINK_R2_MAVLINKMSG_H
+#endif // MAVLINK_R2_MAVLINKMSG__H
