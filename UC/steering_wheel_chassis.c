@@ -169,74 +169,6 @@ HAL_StatusTypeDef swChassis_set_Running(swChassis_t *this)
     return HAL_OK;
 }
 
-/**
- * @brief 底盘状态机(2023/12/06弃用)
- * @param this
- * @description
- * 1.如果底盘处于校准状态，检查是否校准完成，如果完成则进入准备状态
- * 2.如果底盘处于非校准状态，检查是否有速度指令，如果无速度指令则进入停止状态
- * 3.如果有速度指令，则计算目标速度，如果目标速度方向与当前方向偏差太大，则进入转向状态，否则进入运行状态
- *
-void chassis_state_machine(swChassis_t *this)
-{
-    if(this->state==CHASSIS_CORRECTING)
-    {
-        for (uint8_t i = 0; i <this->swheel_num ; i++)
-        {
-            if(this->wheels[i].state!=STOP)
-                return;
-        }
-        this->state = CHASSIS_READY;
-        
-    }
-    else
-    {
-        if (this->target_v.vx==0&&this->target_v.vy==0&&this->target_v.vw==0)
-        {
-            for (uint8_t i = 0;i<this->swheel_num;i++)
-                this->wheels[i].state = STOP;
-            this->state = CHASSIS_STOP;
-        }
-        else {
-        calculate_target_velocity(this);
-        for (uint8_t i = 0; i <this->swheel_num ; i++)
-        {
-            if(this->wheels[i].state==AIMMING)
-            {
-                this->state=CHASSIS_AIMMING;
-                return;
-            }
-        }
-        this->state = CHASSIS_RUNNING;
-        for (uint8_t i = 0; i <this->swheel_num ; i++)
-            this->wheels[i].state = RUNNING;
-        }
-
-        
-        
-        // this->state = CHASSIS_RUNNING;
-        // for (uint8_t i = 0; i <this->swheel_num ; i++)
-        // {
-        //     if(fabsf(this->wheels[i].target_direction-this->wheels[i].direction)>0.5f)
-        //     {
-        //         this->state = CHASSIS_AIMMING;
-        //         break;
-        //     }
-        // }
-        // if (this->state==CHASSIS_AIMMING)
-        // {
-        //     for (uint8_t i = 0; i <this->swheel_num ; i++)
-        //         this->wheels[i].state = AIMMING;
-        // }
-        // else
-        // {
-        //     for (uint8_t i = 0; i <this->swheel_num ; i++)
-        //         this->wheels[i].state = RUNNING;
-        // }
-    }
-}
-*/
-
 
 /**
  * @brief 底盘执行器函数
@@ -257,7 +189,7 @@ void swChassis_executor(swChassis_t *this)
         else
             dji_output_withfc[i]=hDJI[i].speedPID.output;
     }
-    //CanTransmit_DJI_1234(&hcan1,dji_output_withfc[0],dji_output_withfc[1],dji_output_withfc[2],dji_output_withfc[3]);
+    CanTransmit_DJI_1234(&hcan1,dji_output_withfc[0],dji_output_withfc[1],dji_output_withfc[2],dji_output_withfc[3]);
     //CanTransmit_DJI_1234(&hcan1,dji_output_withfc[0],0,0,0);
 
 }
@@ -362,3 +294,71 @@ HAL_StatusTypeDef swChassis_rM_setFcurrent(swChassis_t *this)
 }
 
 #endif //USE_DEFAULT_MOTOR_PARAM
+
+/**
+ * @brief 底盘状态机(2023/12/06弃用)
+ * @param this
+ * @description
+ * 1.如果底盘处于校准状态，检查是否校准完成，如果完成则进入准备状态
+ * 2.如果底盘处于非校准状态，检查是否有速度指令，如果无速度指令则进入停止状态
+ * 3.如果有速度指令，则计算目标速度，如果目标速度方向与当前方向偏差太大，则进入转向状态，否则进入运行状态
+ *
+void chassis_state_machine(swChassis_t *this)
+{
+    if(this->state==CHASSIS_CORRECTING)
+    {
+        for (uint8_t i = 0; i <this->swheel_num ; i++)
+        {
+            if(this->wheels[i].state!=STOP)
+                return;
+        }
+        this->state = CHASSIS_READY;
+        
+    }
+    else
+    {
+        if (this->target_v.vx==0&&this->target_v.vy==0&&this->target_v.vw==0)
+        {
+            for (uint8_t i = 0;i<this->swheel_num;i++)
+                this->wheels[i].state = STOP;
+            this->state = CHASSIS_STOP;
+        }
+        else {
+        calculate_target_velocity(this);
+        for (uint8_t i = 0; i <this->swheel_num ; i++)
+        {
+            if(this->wheels[i].state==AIMMING)
+            {
+                this->state=CHASSIS_AIMMING;
+                return;
+            }
+        }
+        this->state = CHASSIS_RUNNING;
+        for (uint8_t i = 0; i <this->swheel_num ; i++)
+            this->wheels[i].state = RUNNING;
+        }
+
+        
+        
+        // this->state = CHASSIS_RUNNING;
+        // for (uint8_t i = 0; i <this->swheel_num ; i++)
+        // {
+        //     if(fabsf(this->wheels[i].target_direction-this->wheels[i].direction)>0.5f)
+        //     {
+        //         this->state = CHASSIS_AIMMING;
+        //         break;
+        //     }
+        // }
+        // if (this->state==CHASSIS_AIMMING)
+        // {
+        //     for (uint8_t i = 0; i <this->swheel_num ; i++)
+        //         this->wheels[i].state = AIMMING;
+        // }
+        // else
+        // {
+        //     for (uint8_t i = 0; i <this->swheel_num ; i++)
+        //         this->wheels[i].state = RUNNING;
+        // }
+    }
+}
+*/
