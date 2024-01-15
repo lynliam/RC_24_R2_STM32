@@ -73,7 +73,25 @@ Middlewares/Third_Party/FreeRTOS/Source/tasks.c \
 Middlewares/Third_Party/FreeRTOS/Source/timers.c \
 Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c \
 Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c \
-Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
+Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c \
+UC/Caculate.c \
+UC/_chassic_thread.c \
+UC/DJI.c \
+UC/Event_Define.c \
+UC/feetech.c \
+UC/HStateMachine.c \
+UC/mapping.c \
+UC/_mavlink_thread.c \
+UC/ops.c \
+UC/retarget.c \
+UC/steering_wheel.c \
+UC/steering_wheel_chassis.c \
+UC/_up_control_thread.c \
+UC/wtr_can.c \
+UC/wtr_mavlink.c \
+UC/wtr_vesc.c \
+Unitree_SDK/GO-M8010-6.c \
+Unitree_SDK/Unitree_user.c 
 
 # ASM sources
 ASM_SOURCES =  \
@@ -122,7 +140,11 @@ AS_DEFS =
 # C defines
 C_DEFS =  \
 -DUSE_HAL_DRIVER \
--DSTM32F427xx
+-DSTM32F427xx \
+-D__CC_ARM_ \
+-D_TARGET_FPU_VFP \
+-D__FPU_PRESENT=1U \
+-DARM_MATH_CM4
 
 
 # AS includes
@@ -138,7 +160,11 @@ C_INCLUDES =  \
 -IMiddlewares/ST/ARM/DSP/Inc \
 -IMiddlewares/Third_Party/FreeRTOS/Source/include \
 -IMiddlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 \
--IMiddlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
+-IMiddlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F \
+-IUnitree_SDK \
+-IUC \
+-Ir2_mavlinkmsg/r2_mavlinkmsg \
+-Ir2_mavlinkmsg
 
 
 # compile gcc flags

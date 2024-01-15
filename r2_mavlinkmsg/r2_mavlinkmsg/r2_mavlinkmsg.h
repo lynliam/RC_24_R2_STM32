@@ -10,7 +10,7 @@
     #error Wrong include order: MAVLINK_R2_MAVLINKMSG.H MUST NOT BE DIRECTLY USED. Include mavlink.h from the same directory instead or set ALL AND EVERY defines from MAVLINK.H manually accordingly, including the #define MAVLINK_H call.
 #endif
 
-#define MAVLINK_R2_MAVLINKMSG_XML_HASH 2808065733649787990
+#define MAVLINK_R2_MAVLINKMSG_XML_HASH 6743721922285853080
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 #ifndef MAVLINK_MESSAGE_CRCS
-#define MAVLINK_MESSAGE_CRCS {{1, 51, 24, 24, 0, 0, 0}, {2, 241, 12, 12, 0, 0, 0}, {3, 182, 24, 24, 0, 0, 0}, {4, 58, 1, 1, 0, 0, 0}}
+#define MAVLINK_MESSAGE_CRCS {{1, 51, 24, 24, 0, 0, 0}, {2, 241, 12, 12, 0, 0, 0}, {3, 182, 24, 24, 0, 0, 0}, {4, 80, 4, 4, 0, 0, 0}}
 #endif
 
 #include "../protocol.h"
@@ -33,18 +33,6 @@ extern "C" {
 // ENUM DEFINITIONS
 
 
-/** @brief 上层机构控制命令 */
-#ifndef HAVE_ENUM_UP_CONTROL_CMD
-#define HAVE_ENUM_UP_CONTROL_CMD
-typedef enum UP_CONTROL_CMD
-{
-   UP_RESET=0, /* 无命令状态 复位 | */
-   CHASE_BALL=1, /* 找球 | */
-   CATCH_BALL=2, /* 抓球 | */
-   PUT_BALL=3, /* 放球 | */
-   UP_CONTROL_CMD_ENUM_END=4, /*  | */
-} UP_CONTROL_CMD;
-#endif
 
 // MAVLINK VERSION
 

@@ -223,7 +223,7 @@ static void mavlink_test_up_control(uint8_t system_id, uint8_t component_id, mav
         uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
         uint16_t i;
     mavlink_up_control_t packet_in = {
-        5
+        963497464
     };
     mavlink_up_control_t packet1, packet2;
         memset(&packet1, 0, sizeof(packet1));

@@ -5,16 +5,16 @@
 
 
 typedef struct __mavlink_up_control_t {
- uint8_t cmd; /*<   命令*/
+ uint32_t cmd; /*<   命令*/
 } mavlink_up_control_t;
 
-#define MAVLINK_MSG_ID_UP_CONTROL_LEN 1
-#define MAVLINK_MSG_ID_UP_CONTROL_MIN_LEN 1
-#define MAVLINK_MSG_ID_4_LEN 1
-#define MAVLINK_MSG_ID_4_MIN_LEN 1
+#define MAVLINK_MSG_ID_UP_CONTROL_LEN 4
+#define MAVLINK_MSG_ID_UP_CONTROL_MIN_LEN 4
+#define MAVLINK_MSG_ID_4_LEN 4
+#define MAVLINK_MSG_ID_4_MIN_LEN 4
 
-#define MAVLINK_MSG_ID_UP_CONTROL_CRC 58
-#define MAVLINK_MSG_ID_4_CRC 58
+#define MAVLINK_MSG_ID_UP_CONTROL_CRC 80
+#define MAVLINK_MSG_ID_4_CRC 80
 
 
 
@@ -23,14 +23,14 @@ typedef struct __mavlink_up_control_t {
     4, \
     "UP_CONTROL", \
     1, \
-    {  { "cmd", NULL, MAVLINK_TYPE_UINT8_T, 0, 0, offsetof(mavlink_up_control_t, cmd) }, \
+    {  { "cmd", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_up_control_t, cmd) }, \
          } \
 }
 #else
 #define MAVLINK_MESSAGE_INFO_UP_CONTROL { \
     "UP_CONTROL", \
     1, \
-    {  { "cmd", NULL, MAVLINK_TYPE_UINT8_T, 0, 0, offsetof(mavlink_up_control_t, cmd) }, \
+    {  { "cmd", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_up_control_t, cmd) }, \
          } \
 }
 #endif
@@ -45,11 +45,11 @@ typedef struct __mavlink_up_control_t {
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_up_control_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               uint8_t cmd)
+                               uint32_t cmd)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_UP_CONTROL_LEN];
-    _mav_put_uint8_t(buf, 0, cmd);
+    _mav_put_uint32_t(buf, 0, cmd);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_UP_CONTROL_LEN);
 #else
@@ -74,11 +74,11 @@ static inline uint16_t mavlink_msg_up_control_pack(uint8_t system_id, uint8_t co
  */
 static inline uint16_t mavlink_msg_up_control_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
                                mavlink_message_t* msg,
-                                   uint8_t cmd)
+                                   uint32_t cmd)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_UP_CONTROL_LEN];
-    _mav_put_uint8_t(buf, 0, cmd);
+    _mav_put_uint32_t(buf, 0, cmd);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_UP_CONTROL_LEN);
 #else
@@ -127,11 +127,11 @@ static inline uint16_t mavlink_msg_up_control_encode_chan(uint8_t system_id, uin
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_up_control_send(mavlink_channel_t chan, uint8_t cmd)
+static inline void mavlink_msg_up_control_send(mavlink_channel_t chan, uint32_t cmd)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_UP_CONTROL_LEN];
-    _mav_put_uint8_t(buf, 0, cmd);
+    _mav_put_uint32_t(buf, 0, cmd);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_UP_CONTROL, buf, MAVLINK_MSG_ID_UP_CONTROL_MIN_LEN, MAVLINK_MSG_ID_UP_CONTROL_LEN, MAVLINK_MSG_ID_UP_CONTROL_CRC);
 #else
@@ -164,11 +164,11 @@ static inline void mavlink_msg_up_control_send_struct(mavlink_channel_t chan, co
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_up_control_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t cmd)
+static inline void mavlink_msg_up_control_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint32_t cmd)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char *buf = (char *)msgbuf;
-    _mav_put_uint8_t(buf, 0, cmd);
+    _mav_put_uint32_t(buf, 0, cmd);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_UP_CONTROL, buf, MAVLINK_MSG_ID_UP_CONTROL_MIN_LEN, MAVLINK_MSG_ID_UP_CONTROL_LEN, MAVLINK_MSG_ID_UP_CONTROL_CRC);
 #else
@@ -190,9 +190,9 @@ static inline void mavlink_msg_up_control_send_buf(mavlink_message_t *msgbuf, ma
  *
  * @return   命令
  */
-static inline uint8_t mavlink_msg_up_control_get_cmd(const mavlink_message_t* msg)
+static inline uint32_t mavlink_msg_up_control_get_cmd(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  0);
+    return _MAV_RETURN_uint32_t(msg,  0);
 }
 
 /**

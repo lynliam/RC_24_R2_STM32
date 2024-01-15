@@ -1,5 +1,7 @@
 
 #include "FreeRTOS.h"
+#include "portmacro.h"
+#include "projdefs.h"
 #include "task.h"
 #include "_variables.h"
 #include "_up_control_thread.h"
@@ -8,6 +10,7 @@
 #include "feetech.h"
 #include "mapping.h"
 #include "Unitree_user.h"
+#include "event_groups.h"
 
 xTaskHandle getBallTaskHandle;
 UnitreeMotor *unitree_motor1;
@@ -16,6 +19,7 @@ mapping_param_t feet_map;
 void GetBallTask(void *argument);
 void Unitree_start(UnitreeMotor * hm);
 void arm_rotate(UnitreeMotor * hm,float pos,float kp,float kw,uint16_t time);
+void up_reset();
 void fjaw_close()
 {
     __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 102);
@@ -53,6 +57,15 @@ void upjaw_open()
     __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 100);
     __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 65);
 }
+void up_reset()
+{
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    
+    Servo_Write_PosEx(feetservo, mapping_i2o(&feet_map, -1.5), 254, 254);
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    upjaw_open();    
+    fjaw_close();
+}
 // 上层控制线程
 void StartUpControlTask(void *argument)
 {
@@ -60,32 +73,37 @@ void StartUpControlTask(void *argument)
     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
-    fjaw_close();
 
     unitree_motor1 = Unitree_Create_Motor();
     Unitree_start(unitree_motor1);
     mapping_param_init(&feet_map, 3.14, -3.14, 0, 0, 4096, 1592);
     if (Servo_Init(1, huart7)!=0)
             printf("feet init fail/n");
-    
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-    Servo_Write_PosEx(feetservo, mapping_i2o(&feet_map, -1.5), 254, 254);
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-    upjaw_open();
 
-    xTaskCreate(GetBallTask, "get ball", 512, NULL, 2, &getBallTaskHandle);
+    up_reset();
     for (;;) {
-        vTaskDelay(50 / portTICK_PERIOD_MS);
+        EventBits_t bit = xEventGroupWaitBits(UP_Control_Event_Handle,CHASE_BALL_EVENT|UP_RESET_EVENT, pdFALSE, pdFALSE, portMAX_DELAY);
+        if(bit&CHASE_BALL_EVENT)
+            xTaskCreate(GetBallTask, "get ball", 512, NULL, 2, &getBallTaskHandle);
+        if(bit&UP_RESET_EVENT)
+        {
+            vTaskDelete(getBallTaskHandle);
+            vTaskDelay(500/portTICK_PERIOD_MS);
+            up_reset();
+            xEventGroupClearBits(UP_Control_Event_Handle,CHASE_BALL_EVENT&PUT_BALL_EVENT&CATCH_BALL_EVENT);
+            
+        }   
+
     }
 }
 void GetBallTask(void *argument)
 {
     fjaw_open_b();
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
     arm_rotate(unitree_motor1,-1.35,0.2,0.03,1000);
     upjaw_close();
     //等待球进入
-    vTaskDelay(2000/portTICK_PERIOD_MS);
+    vTaskDelay(300/portTICK_PERIOD_MS);
+    xEventGroupWaitBits(UP_Control_Event_Handle,CHASE_BALL_EVENT&CATCH_BALL_EVENT, pdFALSE, pdTRUE, portMAX_DELAY);
     fjaw_open_s();
     vTaskDelay(1000/portTICK_PERIOD_MS);
     Servo_Write_PosEx(feetservo, mapping_i2o(&feet_map, 1.2), 50, 100);
@@ -99,20 +117,21 @@ void GetBallTask(void *argument)
     Servo_Write_PosEx(feetservo, mapping_i2o(&feet_map, 1), 254, 254);
     vTaskDelay(500/portTICK_PERIOD_MS);
     upjaw_close();
-    //等待到达放球处
-    vTaskDelay(1000/portTICK_PERIOD_MS);
+    vTaskDelay(300/portTICK_PERIOD_MS);
     Servo_Write_PosEx(feetservo, mapping_i2o(&feet_map, 1.5), 100, 254);
     arm_rotate(unitree_motor1,-4.4,0.2,0.08,1000);
     Servo_Write_PosEx(feetservo, mapping_i2o(&feet_map, 0), 254, 254);
     vTaskDelay(200/portTICK_PERIOD_MS);
     arm_rotate(unitree_motor1,-4.4,0.3,0.1,100);
     //准备放球
-    vTaskDelay(2000/portTICK_PERIOD_MS);
+    vTaskDelay(300/portTICK_PERIOD_MS);
+    xEventGroupWaitBits(UP_Control_Event_Handle,CHASE_BALL_EVENT&PUT_BALL_EVENT&CATCH_BALL_EVENT, pdFALSE, pdTRUE, portMAX_DELAY);
     upjaw_open();
     vTaskDelay(1000/portTICK_PERIOD_MS);
     Servo_Write_PosEx(feetservo, mapping_i2o(&feet_map, -1.57), 254, 254);
     arm_rotate(unitree_motor1,-0.8,0.15,0.1,800);
     Unitree_UART_tranANDrev(unitree_motor1, 0, 1, 0, 0, 0, 0, 0.1);
+    xEventGroupClearBits(UP_Control_Event_Handle, CHASE_BALL_EVENT&PUT_BALL_EVENT&CATCH_BALL_EVENT);
     vTaskDelete(NULL);
 }
 

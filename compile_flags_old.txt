@@ -25,9 +25,9 @@ Unitree_SDK
 -I
 UC
 -I
-msg
+r2_mavlinkmsg/r2_mavlinkmsg
 -I
-msg/r2_mavlinkmsg
+r2_mavlinkmsg
 
 # Macros
 -DUSE_HAL_DRIVER
@@ -39,3 +39,5 @@ msg/r2_mavlinkmsg
 -Wall
 -fdata-sections
 -ffunction-sections
+
+-target /usr/bin/arm-none-eabi-gcc

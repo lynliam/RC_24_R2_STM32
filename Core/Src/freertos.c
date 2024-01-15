@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "semphr.h"
+#include "event_groups.h"
 #include "_up_control_thread.h"
 #include "_chassis_thread.h"
 #include "_mavlink_thread.h"
@@ -52,6 +53,7 @@
 xTaskHandle upControlTaskHandle;
 xTaskHandle mavlinkTaskHandle;
 xTaskHandle chassisTaskHandle;
+EventGroupHandle_t UP_Control_Event_Handle;
 SemaphoreHandle_t sync_mutex;
 /* USER CODE END Variables */
 /* Definitions for nullTask */
@@ -107,13 +109,14 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   //xTaskCreate(StartUpControlTask,"up control task",512,NULL,0,&upControlTaskHandle);
-  xTaskCreate(StartMavlinkTask,"mavlink task",512,NULL,0,&mavlinkTaskHandle);
-  xTaskCreate(StartChassisTask,"chassis task",512,NULL,1,&chassisTaskHandle);
+  xTaskCreate(StartMavlinkTask,"mavlink task",512,NULL,1,&mavlinkTaskHandle);
+  //xTaskCreate(StartChassisTask,"chassis task",512,NULL,2,&chassisTaskHandle);
 
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
+  UP_Control_Event_Handle = xEventGroupCreate();
   /* USER CODE END RTOS_EVENTS */
 
 }

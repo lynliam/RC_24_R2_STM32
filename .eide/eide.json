@@ -7,9 +7,9 @@
     "Core",
     "Drivers",
     "Middlewares",
-    "msg",
     "UC",
-    "Unitree_SDK"
+    "Unitree_SDK",
+    "r2_mavlinkmsg"
   ],
   "virtualFolder": {
     "name": "<virtual_root>",
@@ -87,10 +87,10 @@
           "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F",
           "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2",
           "Middlewares/ST/ARM/DSP/Inc",
-          "msg",
           "Unitree_SDK",
-          "msg/r2_mavlinkmsg",
-          "UC"
+          "UC",
+          "r2_mavlinkmsg",
+          "r2_mavlinkmsg/r2_mavlinkmsg"
         ],
         "libList": [],
         "sourceDirList": [],
