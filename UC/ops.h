@@ -29,6 +29,7 @@ extern OPS_t OPS_Data;
 
 #if (USE_IT == 1)
 extern uint8_t ch[1];
+extern uint8_t test[28];
 #endif
 
 

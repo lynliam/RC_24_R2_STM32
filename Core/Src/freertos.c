@@ -110,9 +110,8 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   //xTaskCreate(StartUpControlTask,"up control task",512,NULL,0,&upControlTaskHandle);
-  xTaskCreate(StartMicrorosTask,"Micro ros",3000,NULL,1,&microrosTaskHandle);
-  //xTaskCreate(StartChassisTask,"chassis task",512,NULL,2,&chassisTaskHandle);
-
+  xTaskCreate(StartMicrorosTask,"Micro ros",4000,NULL,1,&microrosTaskHandle);
+  xTaskCreate(StartChassisTask,"chassis task",512,NULL,5,&chassisTaskHandle);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */

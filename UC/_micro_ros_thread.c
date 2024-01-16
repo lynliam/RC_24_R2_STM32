@@ -3,6 +3,7 @@
 //
 
 #include "_micro_ros_thread.h"
+#include "FreeRTOS.h"
 #include "main.h"
 #include "cmsis_os.h"
 
@@ -10,6 +11,7 @@
 #include <rcl/error_handling.h>
 #include <rclc/rclc.h>
 #include <rclc/executor.h>
+#include <stdbool.h>
 #include <uxr/client/transport.h>
 #include <rmw_microros/rmw_microros.h>
 #include "usart.h"
@@ -75,6 +77,7 @@ void timer1_callback(rcl_timer_t *timer, int64_t last_call_time)
 }
 
 void StartMicrorosTask(void *argument) {
+    //HAL_UART_Receive_IT(&huart8, (uint8_t *)&ch, 1);
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
     if (rmw_uros_set_custom_transport(
             true,
@@ -111,46 +114,46 @@ void StartMicrorosTask(void *argument) {
         == RCL_RET_OK)
         HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
     std_msgs__msg__String__init(&debugmsg);
-    HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
-    // create publisher
-    // 1.debug_publisher
-    HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
-    if (rclc_publisher_init_default(
-            &debug_publisher,
-            &node,
-            ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, String),
-            "debug")
-        == RCL_RET_OK)
-        HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
+    // HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
+    // // create publisher
+    // // 1.debug_publisher
+    // HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
+    // if (rclc_publisher_init_default(
+    //         &debug_publisher,
+    //         &node,
+    //         ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, String),
+    //         "debug")
+    //     == RCL_RET_OK)
+    //     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
 
-    // 3.actual_pose_publisher
-    HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
-    if (rclc_publisher_init_default(
-            &actual_pose_publisher,
-            &node,
-            ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Pose2D),
-            "chassis_actual_pose")
-        == RCL_RET_OK)
-        HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
-    //create subscriber
-    // 1.chassis_mv_cmd_subscriber
-    HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
-    if (rclc_subscription_init_default(
-            &chassis_mv_cmd_subscriber,
-            &node,
-            ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Pose2D),
-            "chassis_mv_cmd")
-        == RCL_RET_OK)
-    HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
-    //2.up_control_subscriber
-    HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
-    if (rclc_subscription_init_default(
-            &up_control_cmd_subscriber,
-            &node,
-            ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, UInt32),
-            "up_cmd")
-        == RCL_RET_OK)
-    HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
+    // // 3.actual_pose_publisher
+    // HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
+    // if (rclc_publisher_init_default(
+    //         &actual_pose_publisher,
+    //         &node,
+    //         ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Pose2D),
+    //         "chassis_actual_pose")
+    //     == RCL_RET_OK)
+    //     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
+    // //create subscriber
+    // // 1.chassis_mv_cmd_subscriber
+    // HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
+    // if (rclc_subscription_init_default(
+    //         &chassis_mv_cmd_subscriber,
+    //         &node,
+    //         ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Pose2D),
+    //         "chassis_mv_cmd")
+    //     == RCL_RET_OK)
+    // HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
+    // //2.up_control_subscriber
+    // HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
+    // if (rclc_subscription_init_default(
+    //         &up_control_cmd_subscriber,
+    //         &node,
+    //         ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, UInt32),
+    //         "up_cmd")
+    //     == RCL_RET_OK)
+    // HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
     //create timer
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
     if( rclc_timer_init_default(
@@ -167,23 +170,21 @@ void StartMicrorosTask(void *argument) {
         == RCL_RET_OK)
         HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
     //add subscriber and timer to executor
-    rclc_executor_add_subscription(
-            &executor,
-            &chassis_mv_cmd_subscriber,
-            &_chassis_mv_cmd,
-            &chassis_mv_cmd_subscribe_callback,
-            ON_NEW_DATA);
-    rclc_executor_add_subscription(
-            &executor,
-            &up_control_cmd_subscriber,
-            &up_control_cmd_msg,
-            &up_control_cmd_subscribe_callback,
-            ON_NEW_DATA);            
+    // rclc_executor_add_subscription(
+    //         &executor,
+    //         &chassis_mv_cmd_subscriber,
+    //         &_chassis_mv_cmd,
+    //         &chassis_mv_cmd_subscribe_callback,
+    //         ON_NEW_DATA);
+    // rclc_executor_add_subscription(
+    //         &executor,
+    //         &up_control_cmd_subscriber,
+    //         &up_control_cmd_msg,
+    //         &up_control_cmd_subscribe_callback,
+    //         ON_NEW_DATA);            
     rclc_executor_add_timer(&executor, &timer1);
-    vTaskDelay(100/portTICK_RATE_MS);
-
-    xSemaphoreGive(sync_mutex);
-
     rclc_executor_spin(&executor);
-    for (;;) {}
+    for (;;) {
+
+    }
 }

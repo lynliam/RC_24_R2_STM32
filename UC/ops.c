@@ -55,6 +55,7 @@ Posture posture;
 static uint8_t count = 0;
 uint8_t i            = 0;
 uint8_t ch[1];
+uint8_t test[28];
 
 //void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 //{
@@ -68,7 +69,7 @@ uint8_t ch[1];
  */
 uint8_t OPS_Decode(void)
 {
-    HAL_UART_Receive_IT(&OPS_UART_HANDLE, (uint8_t *)&ch, 1);
+    HAL_UART_Receive_IT(&OPS_UART_HANDLE, (uint8_t *)&ch,1);
     // USART_ClearITPendingBit( USART1, USART_FLAG_RXNE);
     // HAL_UART_IRQHandler(&huart6); // 该函数会清空中断标志，取消中断使能，并间接调用回调函数
     switch (count) // uint8_t隐转为int
