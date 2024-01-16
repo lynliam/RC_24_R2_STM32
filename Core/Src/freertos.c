@@ -29,7 +29,7 @@
 #include "event_groups.h"
 #include "_up_control_thread.h"
 #include "_chassis_thread.h"
-#include "_mavlink_thread.h"
+#include "_micro_ros_thread.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,10 +51,11 @@
 /* USER CODE BEGIN Variables */
 
 xTaskHandle upControlTaskHandle;
-xTaskHandle mavlinkTaskHandle;
+xTaskHandle microrosTaskHandle;
 xTaskHandle chassisTaskHandle;
 EventGroupHandle_t UP_Control_Event_Handle;
 SemaphoreHandle_t sync_mutex;
+SemaphoreHandle_t data_mutex;
 /* USER CODE END Variables */
 /* Definitions for nullTask */
 osThreadId_t nullTaskHandle;
@@ -90,8 +91,8 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
   
-  sync_mutex = xSemaphoreCreateBinary();
-
+    sync_mutex = xSemaphoreCreateBinary();
+    data_mutex = xSemaphoreCreateMutex();
   /* USER CODE END RTOS_SEMAPHORES */
 
   /* USER CODE BEGIN RTOS_TIMERS */
@@ -109,7 +110,7 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   //xTaskCreate(StartUpControlTask,"up control task",512,NULL,0,&upControlTaskHandle);
-  xTaskCreate(StartMavlinkTask,"mavlink task",512,NULL,1,&mavlinkTaskHandle);
+  xTaskCreate(StartMicrorosTask,"Micro ros",3000,NULL,1,&microrosTaskHandle);
   //xTaskCreate(StartChassisTask,"chassis task",512,NULL,2,&chassisTaskHandle);
 
   /* USER CODE END RTOS_THREADS */

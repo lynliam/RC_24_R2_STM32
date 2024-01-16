@@ -15,13 +15,11 @@ swChassis_t mychassis;
 
 void StartChassisTask(void *argument)
 {
-    //swChassis_init(&mychassis);
-    // swChassis_startCorrect(&mychassis);
+
     HSM_CHASSIS_Init(&mychassis, "chassis");
     HSM_CHASSIS_Run(&mychassis, HSM_CHASSIS_START, NULL);
-
     for (;;) {
-        swChassis_set_targetVelocity(&mychassis, mv_cmd.vx, mv_cmd.vy, mv_cmd.vw);
+        //swChassis_set_targetVelocity(&mychassis, chassis_mv_cmd.x, chassis_mv_cmd.y, chassis_mv_cmd.theta);
         HSM_CHASSIS_Run(&mychassis, Next_Event, NULL);
         //        for (int i=1;i<5;i++)
         //        {

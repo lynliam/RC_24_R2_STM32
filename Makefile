@@ -81,17 +81,16 @@ UC/Event_Define.c \
 UC/feetech.c \
 UC/HStateMachine.c \
 UC/mapping.c \
-UC/_mavlink_thread.c \
 UC/ops.c \
-UC/retarget.c \
 UC/steering_wheel.c \
 UC/steering_wheel_chassis.c \
 UC/_up_control_thread.c \
 UC/wtr_can.c \
-UC/wtr_mavlink.c \
 UC/wtr_vesc.c \
 Unitree_SDK/GO-M8010-6.c \
-Unitree_SDK/Unitree_user.c 
+Unitree_SDK/Unitree_user.c \
+UC/_micro_ros_thread.c \
+UC/retarget.c 
 
 # ASM sources
 ASM_SOURCES =  \
@@ -163,8 +162,6 @@ C_INCLUDES =  \
 -IMiddlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F \
 -IUnitree_SDK \
 -IUC \
--Ir2_mavlinkmsg/r2_mavlinkmsg \
--Ir2_mavlinkmsg
 
 
 # compile gcc flags
@@ -190,7 +187,7 @@ LDSCRIPT = STM32F427IIHx_FLASH.ld
 # libraries
 LIBS = -lc -lm -lnosys 
 LIBDIR = 
-LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
+LDFLAGS = $(MCU) -specs=nano.specs -specs=nosys.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
 # default action: build all
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
@@ -199,6 +196,20 @@ all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET
 #######################################
 # build the application
 #######################################
+#######################################
+# micro-ROS addons
+#######################################
+LDFLAGS += WTR_micro_ros_stm32cubemx_utils/microros_static_library/libmicroros/libmicroros.a
+C_INCLUDES += -IWTR_micro_ros_stm32cubemx_utils/microros_static_library/libmicroros/microros_include
+
+# Add micro-ROS utils
+C_SOURCES += WTR_micro_ros_stm32cubemx_utils/extra_sources/custom_memory_manager.c
+C_SOURCES += WTR_micro_ros_stm32cubemx_utils/extra_sources/microros_allocators.c
+C_SOURCES += WTR_micro_ros_stm32cubemx_utils/extra_sources/microros_time.c
+
+# Set here the custom transport implementation
+C_SOURCES += WTR_micro_ros_stm32cubemx_utils/extra_sources/microros_transports/dma_transport.c
+
 # list of objects
 OBJECTS = $(addprefix $(BUILD_DIR)/,$(notdir $(C_SOURCES:.c=.o)))
 vpath %.c $(sort $(dir $(C_SOURCES)))

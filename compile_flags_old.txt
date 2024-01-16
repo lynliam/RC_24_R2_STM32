@@ -16,18 +16,14 @@ Middlewares/Third_Party/FreeRTOS/Source/include
 Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 
 -I
 Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
-
 -I
 /home/wtr2023/include
-
 -I 
 Unitree_SDK
 -I
 UC
 -I
-r2_mavlinkmsg/r2_mavlinkmsg
--I
-r2_mavlinkmsg
+WTR_micro_ros_stm32cubemx_utils/microros_static_library/libmicroros/microros_include
 
 # Macros
 -DUSE_HAL_DRIVER
@@ -39,5 +35,3 @@ r2_mavlinkmsg
 -Wall
 -fdata-sections
 -ffunction-sections
-
--target /usr/bin/arm-none-eabi-gcc
