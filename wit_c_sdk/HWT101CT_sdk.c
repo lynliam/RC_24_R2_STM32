@@ -5,12 +5,17 @@
 #include "HWT101CT_sdk.h"
 #include "stdio.h"
 #include"FreeRTOS.h"
+#include "task.h"
 
 float fAcc[3]={0.0}, fGyro[3]={0.0}, fAngle[3]={0.0};
 const uint32_t c_uiBaud[10] = {0, 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600};
 volatile char s_cDataUpdate = 0, s_cCmd = 0xff;
 const USART_TypeDef *  USART_CURRENT =  USART1;
-
+void trans_float(UART_HandleTypeDef huart);
+void CopeCmdData(unsigned char ucData);
+void SensorUartSend(uint8_t *p_data, uint32_t uiSize);
+void SensorDataUpdata(uint32_t uiReg, uint32_t uiRegNum);
+void Delayms(uint16_t ucMs);
 
 float gyrodata[3]={0};
 uint8_t begin_code = 0x55;
@@ -213,7 +218,7 @@ void UsartInit(UART_HandleTypeDef huart,USART_TypeDef* USART,unsigned int uiBaud
     }
 }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+void WIT_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     static uint8_t ucTemp=0;
     if(huart->Instance == HUART_CURRENT.Instance)

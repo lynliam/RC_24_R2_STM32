@@ -8,15 +8,11 @@
 
 
 
-#include "std_msgs/msg/detail/u_int32__struct.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include <rclc/rclc.h>
-#include <std_msgs/msg/float32_multi_array.h>
-#include <std_msgs/msg/u_int32.h>
-#include <std_msgs/msg/string.h>
-#include <geometry_msgs/msg/pose2_d.h>
+
 #include "FreeRTOS.h"
 #include "semphr.h"
 #include "event_groups.h"
@@ -27,8 +23,9 @@ extern "C" {
 #define CHASE_BALL_EVENT 2
 #define CATCH_BALL_EVENT 4
 #define PUT_BALL_EVENT 8
-extern geometry_msgs__msg__Pose2D chassis_mv_cmd;
-extern geometry_msgs__msg__Pose2D chassis_actual_pose;
+// extern geometry_msgs__msg__Pose2D chassis_mv_cmd;
+// extern geometry_msgs__msg__Pose2D chassis_actual_pose;
+
 extern EventGroupHandle_t UP_Control_Event_Handle;
 
 extern xTaskHandle upControlTaskHandle;

@@ -14,53 +14,58 @@
 #include <stdbool.h>
 #include <uxr/client/transport.h>
 #include <rmw_microros/rmw_microros.h>
+
+#include <std_msgs/msg/float32.h>
+#include <std_msgs/msg/u_int32.h>
+#include <std_msgs/msg/string.h>
+#include <geometry_msgs/msg/pose2_d.h>
+
+#include "std_msgs/msg/detail/float32__struct.h"
 #include "usart.h"
 #include "_variables.h"
 #include "ops.h"
+#include "HWT101CT_sdk.h"
 
 #define M_PI		3.14159265358979323846
-bool cubemx_transport_open(struct uxrCustomTransport *transport);
-bool cubemx_transport_close(struct uxrCustomTransport *transport);
-size_t cubemx_transport_write(struct uxrCustomTransport *transport, const uint8_t *buf, size_t len, uint8_t *err);
-size_t cubemx_transport_read(struct uxrCustomTransport *transport, uint8_t *buf, size_t len, int timeout, uint8_t *err);
-void *microros_allocate(size_t size, void *state);
-void microros_deallocate(void *pointer, void *state);
-void *microros_reallocate(void *pointer, size_t size, void *state);
-void *microros_zero_allocate(size_t number_of_elements, size_t size_of_element, void *state);
 
-
-
+// 声明 subscriber publisher timer
 rcl_subscription_t chassis_mv_cmd_subscriber;
 rcl_subscription_t up_control_cmd_subscriber;
-
 rcl_publisher_t debug_publisher;
-
 rcl_publisher_t actual_pose_publisher;
+rcl_publisher_t gyro_z_publisher;
 rcl_timer_t timer1;
-
+// 声明消息
 std_msgs__msg__String debugmsg;
 std_msgs__msg__UInt32 up_control_cmd_msg;
-
-
-geometry_msgs__msg__Pose2D chassis_actual_pose;
 geometry_msgs__msg__Pose2D _chassis_actual_pose;
 geometry_msgs__msg__Pose2D _chassis_mv_cmd;
-geometry_msgs__msg__Pose2D chassis_mv_cmd;
+std_msgs__msg__Float32 _gyro_z;
 //接收回调函数
-
-//2
 void chassis_mv_cmd_subscribe_callback(const void *msgin){
     const geometry_msgs__msg__Pose2D *_chassis_mv_cmd = (const geometry_msgs__msg__Pose2D *) msgin;
     swChassis_set_targetVelocity(&mychassis, _chassis_mv_cmd->x, _chassis_mv_cmd->y, _chassis_mv_cmd->theta);
 }
+
 void up_control_cmd_subscribe_callback(const void *msgin){
     const std_msgs__msg__UInt32 *_up_control_cmd_msg = (const std_msgs__msg__UInt32 *) msgin;
-    //?
     xEventGroupSetBits(UP_Control_Event_Handle,_up_control_cmd_msg->data);
 }
 
 void timer1_callback(rcl_timer_t *timer, int64_t last_call_time)
 {
+    taskENTER_CRITICAL();
+    ProcessData();
+    _chassis_actual_pose.x = OPS_Data.pos_y/1000.f;
+    _chassis_actual_pose.y = -OPS_Data.pos_x/1000.f;
+    _chassis_actual_pose.theta = OPS_Data.z_angle/180.f*3.1415926f;
+    _gyro_z.data = gyrodata[1];
+    taskEXIT_CRITICAL();
+
+    rcl_publish(&actual_pose_publisher, &_chassis_actual_pose, NULL);
+    rcl_publish(&gyro_z_publisher, &_gyro_z, NULL);
+    
+    //debug
     debugmsg.data.capacity = 30;
     debugmsg.data.size = 30;
     debugmsg.data.data = (char *) pvPortMalloc(20 * sizeof(char));
@@ -68,17 +73,17 @@ void timer1_callback(rcl_timer_t *timer, int64_t last_call_time)
     sprintf(debugmsg.data.data, "time:%d event %d", xTaskGetTickCount(),up_control_cmd_msg.data);
     rcl_publish(&debug_publisher, &debugmsg, NULL);
     vPortFree(debugmsg.data.data);
-    taskENTER_CRITICAL();
-    _chassis_actual_pose.x = OPS_Data.pos_y/1000.f;
-    _chassis_actual_pose.y = -OPS_Data.pos_x/1000.f;
-    _chassis_actual_pose.theta = OPS_Data.z_angle/180.f*3.1415926f;
-    taskEXIT_CRITICAL();
-    rcl_publish(&actual_pose_publisher, &_chassis_actual_pose, NULL);
-
 }
-
+// micro-ROS task
 void StartMicrorosTask(void *argument) {
-
+    bool cubemx_transport_open(struct uxrCustomTransport *transport);
+    bool cubemx_transport_close(struct uxrCustomTransport *transport);
+    size_t cubemx_transport_write(struct uxrCustomTransport *transport, const uint8_t *buf, size_t len, uint8_t *err);
+    size_t cubemx_transport_read(struct uxrCustomTransport *transport, uint8_t *buf, size_t len, int timeout, uint8_t *err);
+    void *microros_allocate(size_t size, void *state);
+    void microros_deallocate(void *pointer, void *state);
+    void *microros_reallocate(void *pointer, size_t size, void *state);
+    void *microros_zero_allocate(size_t number_of_elements, size_t size_of_element, void *state);
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
     if (rmw_uros_set_custom_transport(
             true,
@@ -115,8 +120,8 @@ void StartMicrorosTask(void *argument) {
         == RCL_RET_OK)
         HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
     std_msgs__msg__String__init(&debugmsg);
-    // HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
-    // // create publisher
+    HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
+    // create publisher
     // 1.debug_publisher
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
     if (rclc_publisher_init_default(
@@ -126,8 +131,7 @@ void StartMicrorosTask(void *argument) {
             "debug")
         == RCL_RET_OK)
         HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
-
-    // 3.actual_pose_publisher
+    // 2.actual_pose_publisher
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
     if (rclc_publisher_init_default(
             &actual_pose_publisher,
@@ -136,7 +140,16 @@ void StartMicrorosTask(void *argument) {
             "chassis_actual_pose")
         == RCL_RET_OK)
         HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
-    //create subscriber
+    //3.gyro_z_publisher
+    HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
+    if (rclc_publisher_init_default(
+            &gyro_z_publisher,
+            &node,
+            ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Float32),
+            "gyro_z")
+        == RCL_RET_OK)
+    HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
+    // create subscriber
     // 1.chassis_mv_cmd_subscriber
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
     if (rclc_subscription_init_default(
@@ -146,7 +159,7 @@ void StartMicrorosTask(void *argument) {
             "chassis_mv_cmd")
         == RCL_RET_OK)
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
-    //2.up_control_subscriber
+    // 2.up_control_subscriber
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
     if (rclc_subscription_init_default(
             &up_control_cmd_subscriber,
@@ -155,7 +168,7 @@ void StartMicrorosTask(void *argument) {
             "up_cmd")
         == RCL_RET_OK)
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
-    //create timer
+    // create timer
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
     if( rclc_timer_init_default(
             &timer1,
@@ -164,13 +177,13 @@ void StartMicrorosTask(void *argument) {
             timer1_callback)
         == RCL_RET_OK)
         HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
-    //create executor
+    // create executor
     executor = rclc_executor_get_zero_initialized_executor();
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
     if (rclc_executor_init(&executor, &support.context, 3, &allocator)
         == RCL_RET_OK)
         HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
-    //add subscriber and timer to executor
+    // add subscriber and timer to executor
     rclc_executor_add_subscription(
             &executor,
             &chassis_mv_cmd_subscriber,
@@ -186,6 +199,6 @@ void StartMicrorosTask(void *argument) {
     rclc_executor_add_timer(&executor, &timer1);
     rclc_executor_spin(&executor);
     for (;;) {
-
+        vTaskSuspendAll();
     }
 }

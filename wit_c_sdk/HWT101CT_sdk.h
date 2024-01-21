@@ -6,7 +6,7 @@
  * @date 2024-01-13
  *
  * 使用说明：
- * 要求：
+ * 要求：0
  *  波特率：115200
  *  实现函数：delay_ms()
  *  更改串口宏定义： HUART_CURRENT   (第37行)
@@ -54,13 +54,8 @@ typedef union
 
 extern float_to_byte data_imu[13];
 
-void trans_float(UART_HandleTypeDef huart);
-void CopeCmdData(unsigned char ucData);
-void SensorUartSend(uint8_t *p_data, uint32_t uiSize);
-void SensorDataUpdata(uint32_t uiReg, uint32_t uiRegNum);
-void Delayms(uint16_t ucMs);
 void ProcessData(void);
-
+void WIT_UART_RxCpltCallback(UART_HandleTypeDef *huart);
 void UsartInit(UART_HandleTypeDef huart, USART_TypeDef* USART,unsigned int uiBaud);
 uint8_t HW101_Init(void);
 

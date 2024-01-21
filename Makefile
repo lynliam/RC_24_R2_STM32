@@ -63,6 +63,8 @@ Unitree_SDK/GO-M8010-6.c \
 Unitree_SDK/Unitree_user.c \
 UC/_micro_ros_thread.c \
 UC/retarget.c \
+wit_c_sdk/HWT101CT_sdk.c \
+wit_c_sdk/wit_c_sdk.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c \
@@ -161,7 +163,8 @@ C_INCLUDES =  \
 -IMiddlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 \
 -IMiddlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F \
 -IUnitree_SDK \
--IUC
+-IUC \
+-Iwit_c_sdk
 
 
 # compile gcc flags

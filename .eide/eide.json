@@ -8,7 +8,8 @@
     "Drivers",
     "Middlewares",
     "UC",
-    "Unitree_SDK"
+    "Unitree_SDK",
+    "wit_c_sdk"
   ],
   "virtualFolder": {
     "name": "<virtual_root>",

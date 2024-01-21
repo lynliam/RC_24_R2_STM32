@@ -14,10 +14,12 @@
 #include "stm32f4xx_hal_uart.h"
 #include "usart.h"
 #include <stdint.h>
+#include "HWT101CT_sdk.h"
 swChassis_t mychassis;
 
 void StartChassisTask(void *argument)
 {
+    HW101_Init();
     HSM_CHASSIS_Init(&mychassis, "chassis");
     HSM_CHASSIS_Run(&mychassis, HSM_CHASSIS_START, NULL);
     HAL_UART_Receive_IT(&huart8, (uint8_t *)&ch, 1);
@@ -25,6 +27,7 @@ void StartChassisTask(void *argument)
         //HAL_UART_Receive_DMA(&huart8, data, 28);
         //swChassis_set_targetVelocity(&mychassis, chassis_mv_cmd.x, chassis_mv_cmd.y, chassis_mv_cmd.theta);
         HSM_CHASSIS_Run(&mychassis, Next_Event, NULL);
+        
         vTaskDelay(5 / portTICK_RATE_MS);
     }
 }
@@ -41,4 +44,5 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     if (huart->Instance == OPS_UART) {
         OPS_Decode();
     }
+    WIT_UART_RxCpltCallback(huart);
 }

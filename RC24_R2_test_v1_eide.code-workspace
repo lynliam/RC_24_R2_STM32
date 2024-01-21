@@ -24,7 +24,11 @@
             "editor.insertSpaces": true,
             "editor.tabSize": 4,
             "editor.autoIndent": "advanced"
-        }
+        },
+        "C_Cpp.default.compilerPath": "",
+        "C_Cpp.intelliSenseEngineFallback": "enabled",
+        "C_Cpp.default.intelliSenseMode": "linux-gcc-arm",
+        "C_Cpp.autocompleteAddParentheses": true
     },
     "extensions": {
         "recommendations": [
