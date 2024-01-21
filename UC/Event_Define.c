@@ -4,9 +4,6 @@
 #include "steering_wheel_chassis.h"
 #include "stm32f427xx.h"
 #include "_variables.h"
-#include "stm32f4xx_hal.h"
-#include "stm32f4xx_hal_def.h"
-#include "stm32f4xx_hal_gpio.h"
 #include <stdint.h>
 
 HSM_STATE CHASSIS_ON;

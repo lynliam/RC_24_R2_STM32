@@ -6,6 +6,7 @@
 #include "_variables.h"
 #include "_up_control_thread.h"
 #include "tim.h"
+#include <math.h>
 #include <stdint.h>
 #include "feetech.h"
 #include "mapping.h"
@@ -60,7 +61,7 @@ void upjaw_open()
 void up_reset()
 {
     vTaskDelay(1000 / portTICK_PERIOD_MS);
-    
+    arm_rotate(unitree_motor1, 0.523,  0.05,  0.03, 300);
     Servo_Write_PosEx(feetservo, mapping_i2o(&feet_map, -1.5), 254, 254);
     vTaskDelay(1000 / portTICK_PERIOD_MS);
     upjaw_open();    
@@ -82,16 +83,14 @@ void StartUpControlTask(void *argument)
 
     up_reset();
     for (;;) {
-        EventBits_t bit = xEventGroupWaitBits(UP_Control_Event_Handle,CHASE_BALL_EVENT|UP_RESET_EVENT, pdFALSE, pdFALSE, portMAX_DELAY);
-        if(bit&CHASE_BALL_EVENT)
-            xTaskCreate(GetBallTask, "get ball", 512, NULL, 2, &getBallTaskHandle);
+        EventBits_t bit = xEventGroupWaitBits(UP_Control_Event_Handle,CHASE_BALL_EVENT|UP_RESET_EVENT, pdTRUE, pdFALSE, portMAX_DELAY);
+        if(bit==CHASE_BALL_EVENT)
+            xTaskCreate(GetBallTask, "get ball", 800, NULL, 2, &getBallTaskHandle);
         if(bit&UP_RESET_EVENT)
         {
-            vTaskDelete(getBallTaskHandle);
-            vTaskDelay(500/portTICK_PERIOD_MS);
             up_reset();
-            xEventGroupClearBits(UP_Control_Event_Handle,CHASE_BALL_EVENT&PUT_BALL_EVENT&CATCH_BALL_EVENT);
-            
+            vTaskDelete(getBallTaskHandle);
+            xEventGroupClearBits(UP_Control_Event_Handle,CHASE_BALL_EVENT|PUT_BALL_EVENT|CATCH_BALL_EVENT);
         }   
 
     }
@@ -99,11 +98,11 @@ void StartUpControlTask(void *argument)
 void GetBallTask(void *argument)
 {
     fjaw_open_b();
-    arm_rotate(unitree_motor1,-1.35,0.2,0.03,1000);
+    arm_rotate(unitree_motor1,-1.7,0.2,0.03,1000);
     upjaw_close();
     //等待球进入
     vTaskDelay(300/portTICK_PERIOD_MS);
-    xEventGroupWaitBits(UP_Control_Event_Handle,CHASE_BALL_EVENT&CATCH_BALL_EVENT, pdFALSE, pdTRUE, portMAX_DELAY);
+    xEventGroupWaitBits(UP_Control_Event_Handle,(uint32_t)CATCH_BALL_EVENT, pdFALSE, pdTRUE, portMAX_DELAY);
     fjaw_open_s();
     vTaskDelay(1000/portTICK_PERIOD_MS);
     Servo_Write_PosEx(feetservo, mapping_i2o(&feet_map, 1.2), 50, 100);
@@ -125,14 +124,18 @@ void GetBallTask(void *argument)
     arm_rotate(unitree_motor1,-4.4,0.3,0.1,100);
     //准备放球
     vTaskDelay(300/portTICK_PERIOD_MS);
-    xEventGroupWaitBits(UP_Control_Event_Handle,CHASE_BALL_EVENT&PUT_BALL_EVENT&CATCH_BALL_EVENT, pdFALSE, pdTRUE, portMAX_DELAY);
+    xEventGroupWaitBits(UP_Control_Event_Handle,(uint32_t)PUT_BALL_EVENT, pdFALSE, pdTRUE, portMAX_DELAY);
     upjaw_open();
     vTaskDelay(1000/portTICK_PERIOD_MS);
     Servo_Write_PosEx(feetservo, mapping_i2o(&feet_map, -1.57), 254, 254);
     arm_rotate(unitree_motor1,-0.8,0.15,0.1,800);
     Unitree_UART_tranANDrev(unitree_motor1, 0, 1, 0, 0, 0, 0, 0.1);
-    xEventGroupClearBits(UP_Control_Event_Handle, CHASE_BALL_EVENT&PUT_BALL_EVENT&CATCH_BALL_EVENT);
-    vTaskDelete(NULL);
+    xEventGroupSetBits(UP_Control_Event_Handle, UP_RESET_EVENT);
+    vTaskSuspend(NULL);
+    for(;;)
+    {
+        vTaskDelay(1000/portTICK_PERIOD_MS);
+    }
 }
 
 void arm_rotate(UnitreeMotor * hm,float pos,float kp,float kw,uint16_t time)

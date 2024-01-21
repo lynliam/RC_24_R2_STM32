@@ -283,7 +283,7 @@ HAL_StatusTypeDef swChassis_rM_setFcurrent(swChassis_t *this)
             }
             hDJI[i].f_current++;
         }
-        if (time_count[0] > 300 || time_count[1] > 300 || time_count[2] > 300 || time_count[3] > 300) {
+        if (time_count[0] > 3000 || time_count[1] > 3000 || time_count[2] > 3000 || time_count[3] > 3000) {
             return HAL_ERROR;
         }
         CanTransmit_DJI_1234(&hcan1,hDJI[0].f_current,hDJI[1].f_current,hDJI[2].f_current,hDJI[3].f_current);

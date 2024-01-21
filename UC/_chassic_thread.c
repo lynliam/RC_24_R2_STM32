@@ -18,13 +18,13 @@ swChassis_t mychassis;
 
 void StartChassisTask(void *argument)
 {
-    uint8_t data[28];
     HSM_CHASSIS_Init(&mychassis, "chassis");
     HSM_CHASSIS_Run(&mychassis, HSM_CHASSIS_START, NULL);
+    HAL_UART_Receive_IT(&huart8, (uint8_t *)&ch, 1);
     for (;;) {
-        HAL_UART_Receive_DMA(&huart8, data, 28);
+        //HAL_UART_Receive_DMA(&huart8, data, 28);
         //swChassis_set_targetVelocity(&mychassis, chassis_mv_cmd.x, chassis_mv_cmd.y, chassis_mv_cmd.theta);
-        //HSM_CHASSIS_Run(&mychassis, Next_Event, NULL);
+        HSM_CHASSIS_Run(&mychassis, Next_Event, NULL);
         vTaskDelay(5 / portTICK_RATE_MS);
     }
 }
@@ -35,11 +35,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     swChassis_EXTI_Callback(&mychassis, GPIO_Pin);
 }
-/*
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     if (huart->Instance == OPS_UART) {
         OPS_Decode();
     }
 }
-*/

@@ -86,13 +86,14 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
+    
   /* USER CODE END RTOS_MUTEX */
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
   
-    sync_mutex = xSemaphoreCreateBinary();
-    data_mutex = xSemaphoreCreateMutex();
+    //sync_mutex = xSemaphoreCreateBinary();
+    //data_mutex = xSemaphoreCreateMutex();
   /* USER CODE END RTOS_SEMAPHORES */
 
   /* USER CODE BEGIN RTOS_TIMERS */
@@ -110,8 +111,20 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   //xTaskCreate(StartUpControlTask,"up control task",512,NULL,0,&upControlTaskHandle);
-  xTaskCreate(StartMicrorosTask,"Micro ros",4000,NULL,1,&microrosTaskHandle);
-  xTaskCreate(StartChassisTask,"chassis task",512,NULL,5,&chassisTaskHandle);
+if(xTaskCreate(StartMicrorosTask,"micro ros",3000,NULL,1,&microrosTaskHandle)!=pdPASS)
+{
+    while(1);
+}
+//if(xTaskCreate(StartUpControlTask,"up control task",512,NULL,0,&upControlTaskHandle)!=pdPASS)
+//{
+//    while(1);
+//}
+if(xTaskCreate(StartChassisTask,"chassis task",512,NULL,5,&chassisTaskHandle)!=pdPASS)
+{
+    while (1); 
+}
+
+
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
