@@ -99,6 +99,7 @@ int main(void)
   MX_UART8_Init();
   MX_UART7_Init();
   MX_USART3_UART_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   RetargetInit(&huart3);
   //MY_GPIO_Init();
