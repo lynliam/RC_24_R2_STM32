@@ -98,7 +98,7 @@ void StartUpControlTask(void *argument)
 void GetBallTask(void *argument)
 {
     fjaw_open_b();
-    arm_rotate(unitree_motor1,-1.7,0.2,0.03,1000);
+    arm_rotate(unitree_motor1,-2.2,0.2,0.03,1000);
     upjaw_close();
     //等待球进入
     vTaskDelay(300/portTICK_PERIOD_MS);

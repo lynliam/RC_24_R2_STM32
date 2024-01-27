@@ -27,7 +27,7 @@
 #include "HWT101CT_sdk.h"
 
 #define M_PI		3.14159265358979323846
-
+#define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){printf("Failed status on line %d: %d. Aborting.\n",__LINE__,(int)temp_rc); return 1;}}
 // 声明 subscriber publisher timer
 rcl_subscription_t chassis_mv_cmd_subscriber;
 rcl_subscription_t up_control_cmd_subscriber;
@@ -41,6 +41,8 @@ std_msgs__msg__UInt32 up_control_cmd_msg;
 geometry_msgs__msg__Pose2D _chassis_actual_pose;
 geometry_msgs__msg__Pose2D _chassis_mv_cmd;
 std_msgs__msg__Float32 _gyro_z;
+
+
 //接收回调函数
 void chassis_mv_cmd_subscribe_callback(const void *msgin){
     const geometry_msgs__msg__Pose2D *_chassis_mv_cmd = (const geometry_msgs__msg__Pose2D *) msgin;
@@ -70,7 +72,7 @@ void timer1_callback(rcl_timer_t *timer, int64_t last_call_time)
     debugmsg.data.size = 30;
     debugmsg.data.data = (char *) pvPortMalloc(20 * sizeof(char));
     //sprintf(debugmsg.data.data, "time:%dwater:%d heap:%d", xTaskGetTickCount(),uxTaskGetStackHighWaterMark(microrosTaskHandle),xPortGetFreeHeapSize());
-    sprintf(debugmsg.data.data, "time:%d event %d", xTaskGetTickCount(),up_control_cmd_msg.data);
+    sprintf(debugmsg.data.data, "time:%d event %d", xTaskGetTickCount(),100*(int)gyrodata[1]);
     rcl_publish(&debug_publisher, &debugmsg, NULL);
     vPortFree(debugmsg.data.data);
 }
@@ -134,39 +136,39 @@ void StartMicrorosTask(void *argument) {
     // 2.actual_pose_publisher
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
     if (rclc_publisher_init_default(
-            &actual_pose_publisher,
-            &node,
-            ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Pose2D),
-            "chassis_actual_pose")
-        == RCL_RET_OK)
-        HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
+    &actual_pose_publisher,
+    &node,
+    ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Pose2D),
+    "chassis_actual_pose")
+    == RCL_RET_OK)
+    HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
     //3.gyro_z_publisher
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
     if (rclc_publisher_init_default(
-            &gyro_z_publisher,
-            &node,
-            ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Float32),
-            "gyro_z")
-        == RCL_RET_OK)
+    &gyro_z_publisher,
+    &node,
+    ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Float32),
+    "gyro_z")
+    == RCL_RET_OK)
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
     // create subscriber
     // 1.chassis_mv_cmd_subscriber
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
     if (rclc_subscription_init_default(
-            &chassis_mv_cmd_subscriber,
-            &node,
-            ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Pose2D),
-            "chassis_mv_cmd")
-        == RCL_RET_OK)
+    &chassis_mv_cmd_subscriber,
+    &node,
+    ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Pose2D),
+    "chassis_mv_cmd")
+    == RCL_RET_OK)
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
     // 2.up_control_subscriber
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
     if (rclc_subscription_init_default(
-            &up_control_cmd_subscriber,
-            &node,
-            ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, UInt32),
-            "up_cmd")
-        == RCL_RET_OK)
+    &up_control_cmd_subscriber,
+    &node,
+    ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, UInt32),
+    "up_cmd")
+    == RCL_RET_OK)
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
     // create timer
     HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_RESET);
@@ -185,17 +187,17 @@ void StartMicrorosTask(void *argument) {
         HAL_GPIO_WritePin(LDR_GPIO_Port, LDR_Pin, GPIO_PIN_SET);
     // add subscriber and timer to executor
     rclc_executor_add_subscription(
-            &executor,
-            &chassis_mv_cmd_subscriber,
-            &_chassis_mv_cmd,
-            &chassis_mv_cmd_subscribe_callback,
-            ON_NEW_DATA);
+    &executor,
+    &chassis_mv_cmd_subscriber,
+    &_chassis_mv_cmd,
+    &chassis_mv_cmd_subscribe_callback,
+    ON_NEW_DATA);
     rclc_executor_add_subscription(
-            &executor,
-            &up_control_cmd_subscriber,
-            &up_control_cmd_msg,
-            &up_control_cmd_subscribe_callback,
-            ON_NEW_DATA);            
+    &executor,
+    &up_control_cmd_subscriber,
+    &up_control_cmd_msg,
+    &up_control_cmd_subscribe_callback,
+    ON_NEW_DATA);            
     rclc_executor_add_timer(&executor, &timer1);
     rclc_executor_spin(&executor);
     for (;;) {

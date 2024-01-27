@@ -115,10 +115,10 @@ if(xTaskCreate(StartMicrorosTask,"micro ros",3000,NULL,1,&microrosTaskHandle)!=p
 {
     while(1);
 }
-//if(xTaskCreate(StartUpControlTask,"up control task",512,NULL,0,&upControlTaskHandle)!=pdPASS)
-//{
-//    while(1);
-//}
+if(xTaskCreate(StartUpControlTask,"up control task",512,NULL,0,&upControlTaskHandle)!=pdPASS)
+{
+   while(1);
+}
 if(xTaskCreate(StartChassisTask,"chassis task",512,NULL,5,&chassisTaskHandle)!=pdPASS)
 {
     while (1); 
